@@ -18,13 +18,14 @@ document.addEventListener('DOMContentLoaded', function() {
         top: 32px;
         width: calc(50% - 24px);
         height: calc(100vh - 64px);
-        background: rgba(0, 123, 255, 0.1);
-        border: 2px dashed rgba(0, 123, 255, 0.5);
-        border-radius: 8px;
+        background: radial-gradient(circle, rgba(192, 192, 192, 0.05) 0%, rgba(192, 192, 192, 0.15) 100%);
+        border: 1px solid rgba(192, 192, 192, 0.3);
+        box-shadow: inset 0 0 30px rgba(192, 192, 192, 0.2);
+        border-radius: 12px;
         pointer-events: none;
         opacity: 0;
-        transition: opacity 0.2s ease;
-        z-index: 999;
+        transition: opacity 0.3s ease;
+        z-index: 0;
     `;
 
     leftSnapZone.style.cssText = snapZoneStyle + 'left: 16px;';
@@ -35,6 +36,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Make window position absolute for dragging
     windowElement.style.position = 'absolute';
+    windowElement.style.zIndex = '10';
     windowElement.style.left = '50%';
     windowElement.style.top = '32px'; // Position at top with padding
     windowElement.style.transform = 'translateX(-50%)'; // Only center horizontally
