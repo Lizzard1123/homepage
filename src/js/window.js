@@ -8,6 +8,31 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (!windowElement || !headerElement) return;
 
+    // Create snap zone indicators
+    const leftSnapZone = document.createElement('div');
+    const rightSnapZone = document.createElement('div');
+
+    // Style the snap zone indicators
+    const snapZoneStyle = `
+        position: fixed;
+        top: 32px;
+        width: calc(50% - 24px);
+        height: calc(100vh - 64px);
+        background: rgba(0, 123, 255, 0.1);
+        border: 2px dashed rgba(0, 123, 255, 0.5);
+        border-radius: 8px;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+        z-index: 999;
+    `;
+
+    leftSnapZone.style.cssText = snapZoneStyle + 'left: 16px;';
+    rightSnapZone.style.cssText = snapZoneStyle + 'left: calc(50% + 8px);';
+
+    document.body.appendChild(leftSnapZone);
+    document.body.appendChild(rightSnapZone);
+
     // Make window position absolute for dragging
     windowElement.style.position = 'absolute';
     windowElement.style.left = '50%';
@@ -63,10 +88,57 @@ document.addEventListener('DOMContentLoaded', function() {
         windowElement.style.left = constrainedX + 'px';
         windowElement.style.top = constrainedY + 'px';
         windowElement.style.transform = 'none';
+
+        // Check for snap zones (within 50px of edges)
+        const snapThreshold = 50;
+        const isNearLeft = constrainedX <= snapThreshold;
+        const isNearRight = constrainedX >= maxX - snapThreshold;
+
+        // Show/hide snap zone indicators
+        leftSnapZone.style.opacity = isNearLeft ? '1' : '0';
+        rightSnapZone.style.opacity = isNearRight ? '1' : '0';
     });
 
     // Mouse up to stop dragging
     document.addEventListener('mouseup', function() {
+        if (!isDragging) return;
+
+        // Check if we should snap to a side based on current window position
+        const rect = windowElement.getBoundingClientRect();
+        const snapThreshold = 50;
+        const isNearLeft = rect.left <= snapThreshold;
+        const isNearRight = rect.left >= window.innerWidth - rect.width - snapThreshold;
+
+        if (isNearLeft) {
+            // Snap to left side - set width immediately, then animate position
+            windowElement.style.width = 'calc(50% - 24px)';
+            windowElement.style.maxWidth = 'none';
+            windowElement.style.transition = 'left, top, transform 0.3s ease';
+            windowElement.style.left = '16px';
+            windowElement.style.top = '32px';
+            windowElement.style.transform = 'none';
+
+            setTimeout(() => {
+                windowElement.style.transition = '';
+            }, 300);
+        } else if (isNearRight) {
+            // Snap to right side - set width immediately, then animate position
+            windowElement.style.width = 'calc(50% - 24px)';
+            windowElement.style.maxWidth = 'none';
+            windowElement.style.transition = 'left, top, transform 0.3s ease';
+            windowElement.style.left = 'calc(50% + 8px)';
+            windowElement.style.top = '32px';
+            windowElement.style.transform = 'none';
+
+            setTimeout(() => {
+                windowElement.style.transition = '';
+            }, 300);
+        }
+
+        // Hide snap indicators
+        leftSnapZone.style.opacity = '0';
+        rightSnapZone.style.opacity = '0';
+
         isDragging = false;
     });
 
@@ -84,6 +156,8 @@ document.addEventListener('DOMContentLoaded', function() {
         windowElement.style.left = '50%';
         windowElement.style.top = '32px';
         windowElement.style.transform = 'translateX(-50%)';
+        windowElement.style.width = '100%';
+        windowElement.style.maxWidth = '1024px';
         setTimeout(() => {
             windowElement.style.transition = '';
         }, 600);
@@ -154,6 +228,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Prevent resizing by overriding any resize handles
     windowElement.style.resize = 'none';
+
+    // Handle window resize to update snap zones
+    window.addEventListener('resize', function() {
+        // Update snap zone sizes
+        leftSnapZone.style.width = 'calc(50% - 24px)';
+        leftSnapZone.style.height = 'calc(100vh - 64px)';
+        rightSnapZone.style.width = 'calc(50% - 24px)';
+        rightSnapZone.style.height = 'calc(100vh - 64px)';
+        rightSnapZone.style.left = 'calc(50% + 8px)';
+    });
 
     // Make sure content area doesn't interfere with dragging
     const contentElement = document.querySelector('.macos-content');
