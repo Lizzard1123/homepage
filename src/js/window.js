@@ -1,216 +1,363 @@
-// Window drag and control functionality
+// Window Management System - Clean and Scalable
 document.addEventListener('DOMContentLoaded', function() {
-    // Global snap zone occupation tracking
-    const snapZoneOccupation = {
-        left: false,
-        right: false
+    // Configuration Constants
+    const CONFIG = {
+        SNAP_THRESHOLD: 50,
+        WINDOW_OFFSET: 50,
+        ANIMATION_DURATION: 300,
+        FADE_DURATION: 600,
+        Z_INDEX_BASE: 10,
+        Z_INDEX_INCREMENT: 1,
+        LEFT_SNAP_POSITION: '16px',
+        RIGHT_SNAP_POSITION: 'calc(50% + 8px)',
+        TOP_POSITION: '32px',
+        WINDOW_WIDTH: 'calc(50% - 24px)',
+        CENTERED_WIDTH: '100%',
+        MAX_CENTERED_WIDTH: '1024px'
     };
 
-    const windowElement = document.querySelector('.macos-window');
-    const headerElement = document.querySelector('.macos-header');
-    const redLight = document.querySelector('.macos-traffic-light.red');
-    const yellowLight = document.querySelector('.macos-traffic-light.yellow');
-    const greenLight = document.querySelector('.macos-traffic-light.green');
+    // Snap Zone States
+    const SnapZone = {
+        LEFT: 'left',
+        RIGHT: 'right'
+    };
 
-    if (!windowElement || !headerElement) return;
+    // Window Class - Encapsulates individual window behavior
+    class Window {
+        constructor(element, windowManager, options = {}) {
+            this.element = element;
+            this.windowManager = windowManager;
+            this.options = { ...CONFIG, ...options };
 
-    // Create snap zone indicators
-    const leftSnapZone = document.createElement('div');
-    const rightSnapZone = document.createElement('div');
+            this.header = this.element.querySelector('.macos-header');
+            this.redLight = this.element.querySelector('.macos-traffic-light.red');
+            this.yellowLight = this.element.querySelector('.macos-traffic-light.yellow');
+            this.greenLight = this.element.querySelector('.macos-traffic-light.green');
 
-    // Style the snap zone indicators
-    const snapZoneStyle = `
-        position: fixed;
-        top: 32px;
-        width: calc(50% - 24px);
-        height: calc(100vh - 64px);
-        background: radial-gradient(circle, rgba(192, 192, 192, 0.05) 0%, rgba(192, 192, 192, 0.15) 100%);
-        border: 1px solid rgba(192, 192, 192, 0.3);
-        box-shadow: inset 0 0 30px rgba(192, 192, 192, 0.2);
-        border-radius: 12px;
-        pointer-events: none;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-        z-index: 0;
-    `;
+            this.snapZone = null;
+            this.isDragging = false;
+            this.dragStartX = 0;
+            this.dragStartY = 0;
+            this.windowStartX = 0;
+            this.windowStartY = 0;
 
-    leftSnapZone.style.cssText = snapZoneStyle + 'left: 16px;';
-    rightSnapZone.style.cssText = snapZoneStyle + 'left: calc(50% + 8px);';
-
-    document.body.appendChild(leftSnapZone);
-    document.body.appendChild(rightSnapZone);
-
-    // Make window position absolute for dragging
-    windowElement.style.position = 'absolute';
-    windowElement.style.zIndex = '10';
-    windowElement.style.left = '50%';
-    windowElement.style.top = '32px'; // Position at top with padding
-    windowElement.style.transform = 'translateX(-50%)'; // Only center horizontally
-    windowElement.style.maxWidth = 'none';
-    windowElement.style.width = 'calc(50% - 24px)';
-
-    // Prevent text selection during drag
-    windowElement.style.userSelect = 'none';
-    windowElement.style.WebkitUserSelect = 'none';
-    windowElement.style.MozUserSelect = 'none';
-    windowElement.style.msUserSelect = 'none';
-
-    let isDragging = false;
-    let dragStartX = 0;
-    let dragStartY = 0;
-    let windowStartX = 0;
-    let windowStartY = 0;
-
-    // Mouse down on header to start dragging
-    headerElement.addEventListener('mousedown', function(e) {
-        isDragging = true;
-
-        // Get current window position
-        const rect = windowElement.getBoundingClientRect();
-        windowStartX = rect.left;
-        windowStartY = rect.top;
-
-        // Store mouse position relative to window
-        dragStartX = e.clientX - windowStartX;
-        dragStartY = e.clientY - windowStartY;
-
-        // Prevent text selection
-        e.preventDefault();
-    });
-
-    // Mouse move to drag window
-    document.addEventListener('mousemove', function(e) {
-        if (!isDragging) return;
-
-        const newX = e.clientX - dragStartX;
-        const newY = e.clientY - dragStartY;
-
-        // Constrain to viewport bounds (optional - remove if you want it to go off-screen)
-        const rect = windowElement.getBoundingClientRect();
-        const maxX = window.innerWidth - rect.width;
-        const maxY = window.innerHeight - rect.height;
-
-        const constrainedX = Math.max(0, Math.min(newX, maxX));
-        const constrainedY = Math.max(0, Math.min(newY, maxY));
-
-        windowElement.style.left = constrainedX + 'px';
-        windowElement.style.top = constrainedY + 'px';
-        windowElement.style.transform = 'none';
-
-        // Check for snap zones (within 50px of edges)
-        const snapThreshold = 50;
-        const isNearLeft = constrainedX <= snapThreshold;
-        const isNearRight = constrainedX >= maxX - snapThreshold;
-
-        // Show/hide snap zone indicators (only if zone is not occupied)
-        leftSnapZone.style.opacity = (isNearLeft && !snapZoneOccupation.left) ? '1' : '0';
-        rightSnapZone.style.opacity = (isNearRight && !snapZoneOccupation.right) ? '1' : '0';
-    });
-
-    // Mouse up to stop dragging
-    document.addEventListener('mouseup', function() {
-        if (!isDragging) return;
-
-        // Check if we should snap to a side based on current window position
-        const rect = windowElement.getBoundingClientRect();
-        const snapThreshold = 50;
-        const isNearLeft = rect.left <= snapThreshold;
-        const isNearRight = rect.left >= window.innerWidth - rect.width - snapThreshold;
-
-        // Clear previous occupation if this window was snapped
-        if (windowElement.dataset.snapped === 'left') {
-            snapZoneOccupation.left = false;
-            delete windowElement.dataset.snapped;
-        } else if (windowElement.dataset.snapped === 'right') {
-            snapZoneOccupation.right = false;
-            delete windowElement.dataset.snapped;
+            this.init();
         }
 
-        if (isNearLeft && !snapZoneOccupation.left) {
-            // Snap to left side - set width immediately, then animate position
-            snapZoneOccupation.left = true;
-            windowElement.dataset.snapped = 'left';
-            windowElement.style.width = 'calc(50% - 24px)';
-            windowElement.style.maxWidth = 'none';
-            windowElement.style.transition = 'left, top, transform 0.3s ease';
-            windowElement.style.left = '16px';
-            windowElement.style.top = '32px';
-            windowElement.style.transform = 'none';
+        init() {
+            if (!this.header) return;
+
+            this.setupEventListeners();
+            this.setupTrafficLights();
+            this.setupStyling();
+            this.createSnapZones();
+        }
+
+        setupEventListeners() {
+            // Mouse down on header to start dragging
+            this.header.addEventListener('mousedown', this.handleMouseDown.bind(this));
+
+            // Global mouse move and up for dragging
+            document.addEventListener('mousemove', this.handleMouseMove.bind(this));
+            document.addEventListener('mouseup', this.handleMouseUp.bind(this));
+
+            // Window resize handling
+            window.addEventListener('resize', this.handleWindowResize.bind(this));
+        }
+
+        setupTrafficLights() {
+            if (this.redLight) {
+                this.redLight.addEventListener('click', this.remove.bind(this));
+                this.redLight.style.cursor = 'pointer';
+            }
+
+            if (this.yellowLight) {
+                this.yellowLight.addEventListener('click', this.remove.bind(this));
+                this.yellowLight.style.cursor = 'pointer';
+            }
+
+            if (this.greenLight) {
+                this.greenLight.addEventListener('click', this.center.bind(this));
+                this.greenLight.style.cursor = 'pointer';
+            }
+        }
+
+        setupStyling() {
+            // Make window position absolute for dragging
+            Object.assign(this.element.style, {
+                position: 'absolute',
+                userSelect: 'none',
+                WebkitUserSelect: 'none',
+                MozUserSelect: 'none',
+                msUserSelect: 'none',
+                resize: 'none',
+                cursor: 'grab'
+            });
+
+            this.header.style.cursor = 'grab';
+        }
+
+        createSnapZones() {
+            const snapZoneStyle = `
+                position: fixed;
+                top: ${this.options.TOP_POSITION};
+                width: ${this.options.WINDOW_WIDTH};
+                height: calc(100vh - 64px);
+                background: radial-gradient(circle, rgba(192, 192, 192, 0.05) 0%, rgba(192, 192, 192, 0.15) 100%);
+                border: 1px solid rgba(192, 192, 192, 0.3);
+                box-shadow: inset 0 0 30px rgba(192, 192, 192, 0.2);
+                border-radius: 12px;
+                pointer-events: none;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+                z-index: 0;
+            `;
+
+            this.leftSnapZone = document.createElement('div');
+            this.rightSnapZone = document.createElement('div');
+
+            this.leftSnapZone.style.cssText = snapZoneStyle + `left: ${this.options.LEFT_SNAP_POSITION};`;
+            this.rightSnapZone.style.cssText = snapZoneStyle + `left: ${this.options.RIGHT_SNAP_POSITION};`;
+
+            document.body.appendChild(this.leftSnapZone);
+            document.body.appendChild(this.rightSnapZone);
+        }
+
+        handleMouseDown(e) {
+            this.isDragging = true;
+
+            const rect = this.element.getBoundingClientRect();
+            this.windowStartX = rect.left;
+            this.windowStartY = rect.top;
+
+            this.dragStartX = e.clientX - this.windowStartX;
+            this.dragStartY = e.clientY - this.windowStartY;
+
+            this.header.style.cursor = 'grabbing';
+            e.preventDefault();
+        }
+
+        handleMouseMove(e) {
+            if (!this.isDragging) return;
+
+            const newX = e.clientX - this.dragStartX;
+            const newY = e.clientY - this.dragStartY;
+
+            const constrainedX = this.constrainToViewport(newX, newY);
+
+            this.updatePosition(constrainedX.x, constrainedX.y);
+            this.updateSnapIndicators(constrainedX.x, constrainedX.maxX);
+        }
+
+        handleMouseUp() {
+            if (!this.isDragging) return;
+
+            this.attemptSnap();
+            this.hideSnapIndicators();
+            this.resetDragState();
+        }
+
+        handleWindowResize() {
+            // Update snap zone sizes
+            const style = `calc(50% - 24px)`;
+            this.leftSnapZone.style.width = style;
+            this.leftSnapZone.style.height = 'calc(100vh - 64px)';
+            this.rightSnapZone.style.width = style;
+            this.rightSnapZone.style.height = 'calc(100vh - 64px)';
+            this.rightSnapZone.style.left = this.options.RIGHT_SNAP_POSITION;
+        }
+
+        constrainToViewport(x, y) {
+            const rect = this.element.getBoundingClientRect();
+            const maxX = window.innerWidth - rect.width;
+            const maxY = window.innerHeight - rect.height;
+
+            return {
+                x: Math.max(0, Math.min(x, maxX)),
+                y: Math.max(0, Math.min(y, maxY)),
+                maxX: maxX,
+                maxY: maxY
+            };
+        }
+
+        updatePosition(x, y) {
+            this.element.style.left = x + 'px';
+            this.element.style.top = y + 'px';
+            this.element.style.transform = 'none';
+        }
+
+        updateSnapIndicators(x, maxX) {
+            const isNearLeft = x <= this.options.SNAP_THRESHOLD;
+            const isNearRight = x >= maxX - this.options.SNAP_THRESHOLD;
+
+            this.leftSnapZone.style.opacity = (isNearLeft && !this.windowManager.isSnapZoneOccupied(SnapZone.LEFT)) ? '1' : '0';
+            this.rightSnapZone.style.opacity = (isNearRight && !this.windowManager.isSnapZoneOccupied(SnapZone.RIGHT)) ? '1' : '0';
+        }
+
+        hideSnapIndicators() {
+            this.leftSnapZone.style.opacity = '0';
+            this.rightSnapZone.style.opacity = '0';
+        }
+
+        resetDragState() {
+            this.isDragging = false;
+            this.header.style.cursor = 'grab';
+        }
+
+        attemptSnap() {
+            const rect = this.element.getBoundingClientRect();
+            const snapThreshold = this.options.SNAP_THRESHOLD;
+            const isNearLeft = rect.left <= snapThreshold;
+            const isNearRight = rect.left >= window.innerWidth - rect.width - snapThreshold;
+
+            // Clear previous snap zone occupation
+            this.clearSnapZone();
+
+            if (isNearLeft && !this.windowManager.isSnapZoneOccupied(SnapZone.LEFT)) {
+                this.snapToSide(SnapZone.LEFT);
+            } else if (isNearRight && !this.windowManager.isSnapZoneOccupied(SnapZone.RIGHT)) {
+                this.snapToSide(SnapZone.RIGHT);
+            }
+        }
+
+        snapToSide(zone) {
+            this.snapZone = zone;
+            this.windowManager.occupySnapZone(zone, this);
+
+            Object.assign(this.element.style, {
+                width: this.options.WINDOW_WIDTH,
+                maxWidth: 'none',
+                transition: 'left, top, transform 0.3s ease',
+                left: zone === SnapZone.LEFT ? this.options.LEFT_SNAP_POSITION : this.options.RIGHT_SNAP_POSITION,
+                top: this.options.TOP_POSITION,
+                transform: 'none'
+            });
 
             setTimeout(() => {
-                windowElement.style.transition = '';
-            }, 300);
-        } else if (isNearRight && !snapZoneOccupation.right) {
-            // Snap to right side - set width immediately, then animate position
-            snapZoneOccupation.right = true;
-            windowElement.dataset.snapped = 'right';
-            windowElement.style.width = 'calc(50% - 24px)';
-            windowElement.style.maxWidth = 'none';
-            windowElement.style.transition = 'left, top, transform 0.3s ease';
-            windowElement.style.left = 'calc(50% + 8px)';
-            windowElement.style.top = '32px';
-            windowElement.style.transform = 'none';
+                this.element.style.transition = '';
+            }, this.options.ANIMATION_DURATION);
+        }
+
+        clearSnapZone() {
+            if (this.snapZone) {
+                this.windowManager.freeSnapZone(this.snapZone);
+                this.snapZone = null;
+            }
+        }
+
+        center() {
+            this.clearSnapZone();
+
+            Object.assign(this.element.style, {
+                transition: 'all 0.6s ease',
+                left: '50%',
+                top: this.options.TOP_POSITION,
+                transform: 'translateX(-50%)',
+                width: this.options.CENTERED_WIDTH,
+                maxWidth: this.options.MAX_CENTERED_WIDTH
+            });
 
             setTimeout(() => {
-                windowElement.style.transition = '';
-            }, 300);
+                this.element.style.transition = '';
+            }, this.options.FADE_DURATION);
         }
 
-        // Hide snap indicators
-        leftSnapZone.style.opacity = '0';
-        rightSnapZone.style.opacity = '0';
+        remove() {
+            this.clearSnapZone();
 
-        isDragging = false;
-    });
+            this.element.style.transition = 'opacity 0.6s ease';
+            this.element.style.opacity = '0';
 
-    // Traffic light functionality
-    function removeWindow() {
-        // Clear snap zone occupation if this window was snapped
-        if (windowElement.dataset.snapped === 'left') {
-            snapZoneOccupation.left = false;
-        } else if (windowElement.dataset.snapped === 'right') {
-            snapZoneOccupation.right = false;
+            setTimeout(() => {
+                this.element.remove();
+                this.leftSnapZone.remove();
+                this.rightSnapZone.remove();
+            }, this.options.FADE_DURATION);
         }
 
-        windowElement.style.transition = 'opacity 0.6s ease';
-        windowElement.style.opacity = '0';
-        setTimeout(() => {
-            windowElement.remove();
-        }, 600);
+        setZIndex(zIndex) {
+            this.element.style.zIndex = zIndex;
+        }
     }
 
-    function centerWindow() {
-        // Clear snap zone occupation if this window was snapped
-        if (windowElement.dataset.snapped === 'left') {
-            snapZoneOccupation.left = false;
-            delete windowElement.dataset.snapped;
-        } else if (windowElement.dataset.snapped === 'right') {
-            snapZoneOccupation.right = false;
-            delete windowElement.dataset.snapped;
+    // WindowManager Class - Handles global state and window creation
+    class WindowManager {
+        constructor() {
+            this.windows = [];
+            this.snapZones = {
+                [SnapZone.LEFT]: null,
+                [SnapZone.RIGHT]: null
+            };
+            this.nextZIndex = CONFIG.Z_INDEX_BASE;
         }
 
-        windowElement.style.transition = 'all 0.6s ease';
-        windowElement.style.left = '50%';
-        windowElement.style.top = '32px';
-        windowElement.style.transform = 'translateX(-50%)';
-        windowElement.style.width = '100%';
-        windowElement.style.maxWidth = '1024px';
-        setTimeout(() => {
-            windowElement.style.transition = '';
-        }, 600);
+        createWindow(element, options = {}) {
+            const window = new Window(element, this, options);
+            this.windows.push(window);
+            window.setZIndex(this.nextZIndex++);
+            return window;
+        }
+
+        isSnapZoneOccupied(zone) {
+            return this.snapZones[zone] !== null;
+        }
+
+        occupySnapZone(zone, window) {
+            this.snapZones[zone] = window;
+        }
+
+        freeSnapZone(zone) {
+            this.snapZones[zone] = null;
+        }
+
+        loadWindowFromTemplate(templateId, options = {}) {
+            const template = document.getElementById(templateId);
+            if (!template) {
+                console.error('Template not found:', templateId);
+                return null;
+            }
+
+            // Clone the template content
+            const windowElement = template.content.firstElementChild.cloneNode(true);
+
+            // Position the window
+            Object.assign(windowElement.style, {
+                left: '50px',
+                top: '50px',
+                transform: 'none'
+            });
+
+            document.body.appendChild(windowElement);
+            return this.createWindow(windowElement, options);
+        }
+
+        createNewWindowFromTemplate(templateSelector, options = {}) {
+            const template = document.querySelector(templateSelector);
+            if (!template) return null;
+
+            const newWindow = template.cloneNode(true);
+
+            // Clean up cloned window
+            const activityLink = newWindow.querySelector('.activity-link');
+            if (activityLink) {
+                activityLink.classList.remove('activity-link');
+                activityLink.classList.add('activity-link-cloned');
+            }
+
+            // Position offset from original
+            const originalRect = template.getBoundingClientRect();
+            Object.assign(newWindow.style, {
+                left: (originalRect.left + CONFIG.WINDOW_OFFSET) + 'px',
+                top: (originalRect.top + CONFIG.WINDOW_OFFSET) + 'px',
+                transform: 'none'
+            });
+
+            document.body.appendChild(newWindow);
+            return this.createWindow(newWindow, options);
+        }
     }
 
-    // Add click handlers to traffic lights
-    redLight.addEventListener('click', removeWindow);
-    yellowLight.addEventListener('click', removeWindow);
-    greenLight.addEventListener('click', centerWindow);
-
-    // Set cursor for traffic lights
-    redLight.style.cursor = 'pointer';
-    yellowLight.style.cursor = 'pointer';
-    greenLight.style.cursor = 'pointer';
-
-    // Add hover effects with macOS symbols
+    // Add hover effects with macOS symbols for traffic lights
     const style = document.createElement('style');
     style.textContent = `
         .macos-traffic-light::before {
@@ -251,280 +398,25 @@ document.addEventListener('DOMContentLoaded', function() {
     `;
     document.head.appendChild(style);
 
-    // Add cursor style to header for dragging
-    headerElement.style.cursor = 'grab';
-
-    // Change cursor during drag
-    headerElement.addEventListener('mousedown', function() {
-        headerElement.style.cursor = 'grabbing';
-    });
-
-    document.addEventListener('mouseup', function() {
-        headerElement.style.cursor = 'grab';
-    });
-
-    // Prevent resizing by overriding any resize handles
-    windowElement.style.resize = 'none';
-
-    // Handle window resize to update snap zones
-    window.addEventListener('resize', function() {
-        // Update snap zone sizes
-        leftSnapZone.style.width = 'calc(50% - 24px)';
-        leftSnapZone.style.height = 'calc(100vh - 64px)';
-        rightSnapZone.style.width = 'calc(50% - 24px)';
-        rightSnapZone.style.height = 'calc(100vh - 64px)';
-        rightSnapZone.style.left = 'calc(50% + 8px)';
-    });
-
     // Make sure content area doesn't interfere with dragging
     const contentElement = document.querySelector('.macos-content');
     if (contentElement) {
         contentElement.style.pointerEvents = 'auto';
     }
 
-    // Activity section functionality - open new window
-    const activityLink = document.querySelector('.activity-link');
-    if (activityLink) {
-        activityLink.addEventListener('click', function(e) {
-            e.preventDefault();
+    // Initialize the system
+    const windowManager = new WindowManager();
 
-            // Clone the entire window
-            const originalWindow = document.querySelector('.macos-window');
-            const newWindow = originalWindow.cloneNode(true);
-
-            // Remove the activity-link class from the clone to prevent infinite recursion
-            const clonedActivityLink = newWindow.querySelector('.activity-link');
-            if (clonedActivityLink) {
-                clonedActivityLink.classList.remove('activity-link');
-                clonedActivityLink.classList.add('activity-link-cloned');
-            }
-
-            // Position the new window slightly offset from the original
-            const rect = originalWindow.getBoundingClientRect();
-            newWindow.style.left = (rect.left + 50) + 'px';
-            newWindow.style.top = (rect.top + 50) + 'px';
-            newWindow.style.transform = 'none';
-            newWindow.style.zIndex = '11'; // Higher than original
-
-            // Add the new window to the page
-            document.body.appendChild(newWindow);
-
-            // Reinitialize window functionality for the new window
-            initializeWindowFunctionality(newWindow);
-        });
-    }
-
-    // Function to initialize window functionality for cloned windows
-    function initializeWindowFunctionality(windowElement) {
-        const headerElement = windowElement.querySelector('.macos-header');
-        const redLight = windowElement.querySelector('.macos-traffic-light.red');
-        const yellowLight = windowElement.querySelector('.macos-traffic-light.yellow');
-        const greenLight = windowElement.querySelector('.macos-traffic-light.green');
-
-        if (!headerElement) return;
-
-        // Create snap zone indicators for this window
-        const leftSnapZone = document.createElement('div');
-        const rightSnapZone = document.createElement('div');
-
-        // Style the snap zone indicators
-        const snapZoneStyle = `
-            position: fixed;
-            top: 32px;
-            width: calc(50% - 24px);
-            height: calc(100vh - 64px);
-            background: radial-gradient(circle, rgba(192, 192, 192, 0.05) 0%, rgba(192, 192, 192, 0.15) 100%);
-            border: 1px solid rgba(192, 192, 192, 0.3);
-            box-shadow: inset 0 0 30px rgba(192, 192, 192, 0.2);
-            border-radius: 12px;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            z-index: 0;
-        `;
-
-        leftSnapZone.style.cssText = snapZoneStyle + 'left: 16px;';
-        rightSnapZone.style.cssText = snapZoneStyle + 'left: calc(50% + 8px);';
-
-        document.body.appendChild(leftSnapZone);
-        document.body.appendChild(rightSnapZone);
-
-        let isDragging = false;
-        let dragStartX = 0;
-        let dragStartY = 0;
-        let windowStartX = 0;
-        let windowStartY = 0;
-
-        // Mouse down on header to start dragging
-        headerElement.addEventListener('mousedown', function(e) {
-            isDragging = true;
-
-            // Get current window position
-            const rect = windowElement.getBoundingClientRect();
-            windowStartX = rect.left;
-            windowStartY = rect.top;
-
-            // Store mouse position relative to window
-            dragStartX = e.clientX - windowStartX;
-            dragStartY = e.clientY - windowStartY;
-
-            // Prevent text selection
-            e.preventDefault();
-        });
-
-        // Mouse move to drag window
-        document.addEventListener('mousemove', function(e) {
-            if (!isDragging) return;
-
-            const newX = e.clientX - dragStartX;
-            const newY = e.clientY - dragStartY;
-
-            // Constrain to viewport bounds (optional - remove if you want it to go off-screen)
-            const rect = windowElement.getBoundingClientRect();
-            const maxX = window.innerWidth - rect.width;
-            const maxY = window.innerHeight - rect.height;
-
-            const constrainedX = Math.max(0, Math.min(newX, maxX));
-            const constrainedY = Math.max(0, Math.min(newY, maxY));
-
-            windowElement.style.left = constrainedX + 'px';
-            windowElement.style.top = constrainedY + 'px';
-            windowElement.style.transform = 'none';
-
-            // Check for snap zones (within 50px of edges)
-            const snapThreshold = 50;
-            const isNearLeft = constrainedX <= snapThreshold;
-            const isNearRight = constrainedX >= maxX - snapThreshold;
-
-            // Show/hide snap zone indicators (only if zone is not occupied)
-            leftSnapZone.style.opacity = (isNearLeft && !snapZoneOccupation.left) ? '1' : '0';
-            rightSnapZone.style.opacity = (isNearRight && !snapZoneOccupation.right) ? '1' : '0';
-        });
-
-        // Mouse up to stop dragging
-        document.addEventListener('mouseup', function() {
-            if (!isDragging) return;
-
-            // Check if we should snap to a side based on current window position
-            const rect = windowElement.getBoundingClientRect();
-            const snapThreshold = 50;
-            const maxX = window.innerWidth - rect.width;
-            const isNearLeft = rect.left <= snapThreshold;
-            const isNearRight = rect.left >= window.innerWidth - rect.width - snapThreshold;
-
-            // Clear previous occupation if this window was snapped
-            if (windowElement.dataset.snapped === 'left') {
-                snapZoneOccupation.left = false;
-                delete windowElement.dataset.snapped;
-            } else if (windowElement.dataset.snapped === 'right') {
-                snapZoneOccupation.right = false;
-                delete windowElement.dataset.snapped;
-            }
-
-            if (isNearLeft && !snapZoneOccupation.left) {
-                // Snap to left side - set width immediately, then animate position
-                snapZoneOccupation.left = true;
-                windowElement.dataset.snapped = 'left';
-                windowElement.style.width = 'calc(50% - 24px)';
-                windowElement.style.maxWidth = 'none';
-                windowElement.style.transition = 'left, top, transform 0.3s ease';
-                windowElement.style.left = '16px';
-                windowElement.style.top = '32px';
-                windowElement.style.transform = 'none';
-
-                setTimeout(() => {
-                    windowElement.style.transition = '';
-                }, 300);
-            } else if (isNearRight && !snapZoneOccupation.right) {
-                // Snap to right side - set width immediately, then animate position
-                snapZoneOccupation.right = true;
-                windowElement.dataset.snapped = 'right';
-                windowElement.style.width = 'calc(50% - 24px)';
-                windowElement.style.maxWidth = 'none';
-                windowElement.style.transition = 'left, top, transform 0.3s ease';
-                windowElement.style.left = 'calc(50% + 8px)';
-                windowElement.style.top = '32px';
-                windowElement.style.transform = 'none';
-
-                setTimeout(() => {
-                    windowElement.style.transition = '';
-                }, 300);
-            }
-
-            // Hide snap indicators
-            leftSnapZone.style.opacity = '0';
-            rightSnapZone.style.opacity = '0';
-
-            isDragging = false;
-        });
-
-        // Traffic light functionality
-        function removeWindow() {
-            // Clear snap zone occupation if this window was snapped
-            if (windowElement.dataset.snapped === 'left') {
-                snapZoneOccupation.left = false;
-            } else if (windowElement.dataset.snapped === 'right') {
-                snapZoneOccupation.right = false;
-            }
-
-            windowElement.style.transition = 'opacity 0.6s ease';
-            windowElement.style.opacity = '0';
-            setTimeout(() => {
-                windowElement.remove();
-            }, 600);
+    // Load and create the main window from template
+    const mainWindow = windowManager.loadWindowFromTemplate('main-window-template');
+    if (mainWindow) {
+        // Setup Activity link to create new activity windows
+        const activityLink = document.querySelector('.activity-link');
+        if (activityLink) {
+            activityLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                windowManager.loadWindowFromTemplate('activity-window-template');
+            });
         }
-
-        function centerWindow() {
-            // Clear snap zone occupation if this window was snapped
-            if (windowElement.dataset.snapped === 'left') {
-                snapZoneOccupation.left = false;
-                delete windowElement.dataset.snapped;
-            } else if (windowElement.dataset.snapped === 'right') {
-                snapZoneOccupation.right = false;
-                delete windowElement.dataset.snapped;
-            }
-
-            windowElement.style.transition = 'all 0.6s ease';
-            windowElement.style.left = '50%';
-            windowElement.style.top = '32px';
-            windowElement.style.transform = 'translateX(-50%)';
-            windowElement.style.width = '100%';
-            windowElement.style.maxWidth = '1024px';
-            setTimeout(() => {
-                windowElement.style.transition = '';
-            }, 600);
-        }
-
-        // Add click handlers to traffic lights
-        if (redLight) redLight.addEventListener('click', removeWindow);
-        if (yellowLight) yellowLight.addEventListener('click', removeWindow);
-        if (greenLight) greenLight.addEventListener('click', centerWindow);
-
-        // Handle window resize to update snap zones
-        window.addEventListener('resize', function() {
-            // Update snap zone sizes
-            leftSnapZone.style.width = 'calc(50% - 24px)';
-            leftSnapZone.style.height = 'calc(100vh - 64px)';
-            rightSnapZone.style.width = 'calc(50% - 24px)';
-            rightSnapZone.style.height = 'calc(100vh - 64px)';
-            rightSnapZone.style.left = 'calc(50% + 8px)';
-        });
-
-        // Add cursor style to header for dragging
-        headerElement.style.cursor = 'grab';
-
-        // Change cursor during drag
-        headerElement.addEventListener('mousedown', function() {
-            headerElement.style.cursor = 'grabbing';
-        });
-
-        document.addEventListener('mouseup', function() {
-            headerElement.style.cursor = 'grab';
-        });
-
-        // Set cursor styles for traffic lights
-        if (redLight) redLight.style.cursor = 'pointer';
-        if (yellowLight) yellowLight.style.cursor = 'pointer';
-        if (greenLight) greenLight.style.cursor = 'pointer';
     }
 });

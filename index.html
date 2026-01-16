@@ -67,101 +67,204 @@
         padding: 32px 16px;
       "
     >
-      <div style="max-width: 1024px; margin: 0 auto">
-        <div class="macos-window">
-          <div class="macos-header">
-            <div class="macos-header-left">
-              <div class="macos-traffic-lights">
-                <div class="macos-traffic-light red"></div>
-                <div class="macos-traffic-light yellow"></div>
-                <div class="macos-traffic-light green"></div>
-              </div>
-              <div class="macos-nav-buttons">
-                <div class="tooltip-container">
-                  <a class="macos-nav-button macos-nav-back" href="https://jamesakl.com/" target="_blank">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                  </a>
-                  <div class="tooltip bottom">See the inspiration <br> for this website</div>
-                </div>
-                <button class="macos-nav-button macos-nav-forward" disabled title="Forward">
+      <div id="window-container" style="max-width: 1024px; margin: 0 auto">
+        <!-- Windows will be loaded dynamically here -->
+      </div>
+    </div>
+  </body>
+</html>
+
+    <!-- Window Templates -->
+    <template id="main-window-template">
+      <div class="macos-window">
+        <div class="macos-header">
+          <div class="macos-header-left">
+            <div class="macos-traffic-lights">
+              <div class="macos-traffic-light red"></div>
+              <div class="macos-traffic-light yellow"></div>
+              <div class="macos-traffic-light green"></div>
+            </div>
+            <div class="macos-nav-buttons">
+              <div class="tooltip-container">
+                <a class="macos-nav-button macos-nav-back" href="https://jamesakl.com/" target="_blank">
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                </button>
-              </div>
-            </div>
-            <div class="macos-title">
-              <span class="macos-title-text">Ethan Gutierrez</span>
-            </div>
-            <div class="macos-header-links">
-              <div class="tooltip-container">
-                <a class="macos-header-link" href="mailto:ethangutierrez@gatech.edu" target="_blank">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    <polyline points="22,6 12,13 2,6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
                 </a>
-                <div class="tooltip bottom">Email</div>
+                <div class="tooltip bottom">See the inspiration <br> for this website</div>
               </div>
-              <div class="tooltip-container">
-                <a class="macos-header-link" href="https://www.linkedin.com/in/ethancgutierrez/" target="_blank">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    <rect x="2" y="9" width="4" height="12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    <circle cx="4" cy="4" r="2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                </a>
-                <div class="tooltip bottom">LinkedIn</div>
-              </div>
-              <div class="tooltip-container">
-                <a class="macos-header-link" href="https://pypi.org/user/lizzard1123/" target="_blank">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="2" y="2" width="20" height="20" rx="2" stroke="currentColor" stroke-width="2"/>
-                    <text x="12" y="16" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="currentColor">Py</text>
-                  </svg>
-                </a>
-                <div class="tooltip bottom">PyPI</div>
-              </div>
-              <div class="tooltip-container">
-                <a class="macos-header-link" href="https://github.com/lizzard1123" target="_blank">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                </a>
-                <div class="tooltip bottom">GitHub</div>
-              </div>
+              <button class="macos-nav-button macos-nav-forward" disabled title="Forward">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
             </div>
           </div>
-          <div class="macos-content">
-            <div
-              class="site-container"
-              style="max-width: none; margin: 0; padding: 0; min-height: auto"
-            >
-              <main class="content">
-                <div class="section-table">
-                  <span class="section-label">About</span>
-                  <a href="#" class="section-title">Coming Soon</a>
-                  <span class="section-meta">Placeholder</span>
-                  <div class="section-spacer"></div>
-                  <span class="section-label">Posts</span>
-                  <a href="#" class="section-title">Coming Soon</a>
-                  <span class="section-meta">Placeholder</span>
-                  <div class="section-spacer"></div>
-                  <span class="section-label">Activity</span>
-                  <a href="#" class="section-title activity-link">Coming Soon</a>
-                  <span class="section-meta">Placeholder</span>
-                  <div class="section-spacer"></div>
-                  <span class="section-label">Projects</span>
-                  <a href="#" class="section-title">Coming Soon</a>
-                  <span class="section-meta">Placeholder</span>
-                </div>
-              </main>
+          <div class="macos-title">
+            <span class="macos-title-text">Ethan Gutierrez</span>
+          </div>
+          <div class="macos-header-links">
+            <div class="tooltip-container">
+              <a class="macos-header-link" href="mailto:ethangutierrez@gatech.edu" target="_blank">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <polyline points="22,6 12,13 2,6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </a>
+              <div class="tooltip bottom">Email</div>
+            </div>
+            <div class="tooltip-container">
+              <a class="macos-header-link" href="https://www.linkedin.com/in/ethancgutierrez/" target="_blank">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <rect x="2" y="9" width="4" height="12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <circle cx="4" cy="4" r="2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </a>
+              <div class="tooltip bottom">LinkedIn</div>
+            </div>
+            <div class="tooltip-container">
+              <a class="macos-header-link" href="https://pypi.org/user/lizzard1123/" target="_blank">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="2" y="2" width="20" height="20" rx="2" stroke="currentColor" stroke-width="2"/>
+                  <text x="12" y="16" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="currentColor">Py</text>
+                </svg>
+              </a>
+              <div class="tooltip bottom">PyPI</div>
+            </div>
+            <div class="tooltip-container">
+              <a class="macos-header-link" href="https://github.com/lizzard1123" target="_blank">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </a>
+              <div class="tooltip bottom">GitHub</div>
             </div>
           </div>
         </div>
+        <div class="macos-content">
+          <div
+            class="site-container"
+            style="max-width: none; margin: 0; padding: 0; min-height: auto"
+          >
+            <main class="content">
+              <div class="section-table">
+                <span class="section-label">About</span>
+                <a href="#" class="section-title">Coming Soon</a>
+                <span class="section-meta">Placeholder</span>
+                <div class="section-spacer"></div>
+                <span class="section-label">Posts</span>
+                <a href="#" class="section-title">Coming Soon</a>
+                <span class="section-meta">Placeholder</span>
+                <div class="section-spacer"></div>
+                <span class="section-label">Activity</span>
+                <a href="#" class="section-title activity-link">Coming Soon</a>
+                <span class="section-meta">Placeholder</span>
+                <div class="section-spacer"></div>
+                <span class="section-label">Projects</span>
+                <a href="#" class="section-title">Coming Soon</a>
+                <span class="section-meta">Placeholder</span>
+              </div>
+            </main>
+          </div>
+        </div>
       </div>
-    </div>
+    </template>
+
+    <template id="activity-window-template">
+      <div class="macos-window">
+        <div class="macos-header">
+          <div class="macos-header-left">
+            <div class="macos-traffic-lights">
+              <div class="macos-traffic-light red"></div>
+              <div class="macos-traffic-light yellow"></div>
+              <div class="macos-traffic-light green"></div>
+            </div>
+            <div class="macos-nav-buttons">
+              <div class="tooltip-container">
+                <a class="macos-nav-button macos-nav-back" href="https://jamesakl.com/" target="_blank">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </a>
+                <div class="tooltip bottom">See the inspiration <br> for this website</div>
+              </div>
+              <button class="macos-nav-button macos-nav-forward" disabled title="Forward">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div class="macos-title">
+            <span class="macos-title-text">Activity</span>
+          </div>
+          <div class="macos-header-links">
+            <div class="tooltip-container">
+              <a class="macos-header-link" href="mailto:ethangutierrez@gatech.edu" target="_blank">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <polyline points="22,6 12,13 2,6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </a>
+              <div class="tooltip bottom">Email</div>
+            </div>
+            <div class="tooltip-container">
+              <a class="macos-header-link" href="https://www.linkedin.com/in/ethancgutierrez/" target="_blank">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <rect x="2" y="9" width="4" height="12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <circle cx="4" cy="4" r="2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </a>
+              <div class="tooltip bottom">LinkedIn</div>
+            </div>
+            <div class="tooltip-container">
+              <a class="macos-header-link" href="https://pypi.org/user/lizzard1123/" target="_blank">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="2" y="2" width="20" height="20" rx="2" stroke="currentColor" stroke-width="2"/>
+                  <text x="12" y="16" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="currentColor">Py</text>
+                </svg>
+              </a>
+              <div class="tooltip bottom">PyPI</div>
+            </div>
+            <div class="tooltip-container">
+              <a class="macos-header-link" href="https://github.com/lizzard1123" target="_blank">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </a>
+              <div class="tooltip bottom">GitHub</div>
+            </div>
+          </div>
+        </div>
+        <div class="macos-content">
+          <div
+            class="site-container"
+            style="max-width: none; margin: 0; padding: 0; min-height: auto"
+          >
+            <main class="content">
+              <div class="section-table">
+                <span class="section-label">Recent Activity</span>
+                <a href="#" class="section-title">GitHub Commits</a>
+                <span class="section-meta">Latest updates</span>
+                <div class="section-spacer"></div>
+                <span class="section-label">Publications</span>
+                <a href="#" class="section-title">Research Papers</a>
+                <span class="section-meta">Academic work</span>
+                <div class="section-spacer"></div>
+                <span class="section-label">Projects</span>
+                <a href="#" class="section-title">Active Development</a>
+                <span class="section-meta">Current projects</span>
+                <div class="section-spacer"></div>
+                <span class="section-label">Blog Posts</span>
+                <a href="#" class="section-title">Latest Articles</a>
+                <span class="section-meta">Technical writing</span>
+              </div>
+            </main>
+          </div>
+        </div>
+      </div>
+    </template>
   </body>
 </html>
