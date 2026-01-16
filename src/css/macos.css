@@ -5,15 +5,21 @@
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
   overflow: hidden;
   border: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 64px);
+  width: fit-content;
+  min-width: 320px;
 }
 
 .macos-header {
   background: linear-gradient(to bottom, var(--bg-secondary), var(--bg-tertiary));
   border-bottom: 1px solid var(--border-subtle);
-  padding: 24px 24px;
+  padding: 16px 24px;
   display: flex;
   align-items: center;
   gap: 8px;
+  flex-shrink: 0;
 }
 
 .macos-header-left {
@@ -121,5 +127,25 @@
 }
 
 .macos-content {
-  padding: 32px 48px;
+  padding: 16px 24px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* Custom Scrollbar for macOS window content */
+.macos-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.macos-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.macos-content::-webkit-scrollbar-thumb {
+  background: var(--border-focus);
+  border-radius: 4px;
+}
+
+.macos-content::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
 }

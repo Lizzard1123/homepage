@@ -1,0 +1,90 @@
+/* Contribution Graphs - GitHub Style */
+.contribution-graphs {
+  padding: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center children horizontally */
+  overflow: hidden;
+}
+
+.contribution-scaler {
+  width: 800px; /* Fixed target width for scaling */
+  transform-origin: top center; /* Scale from the top center */
+  transition: transform 0.1s ease;
+  flex-shrink: 0;
+}
+
+.contribution-months-row {
+  display: flex;
+  margin-bottom: 8px;
+  padding-left: 100px; /* Offset for Year + Day labels */
+}
+
+.contribution-month {
+  font-family: var(--secondary-font);
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  width: 53.5px; /* (53 cols * 13px) / 12 months roughly */
+  text-align: left;
+}
+
+.contribution-year-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 4px;
+}
+
+.contribution-year-label {
+  font-family: var(--primary-font);
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  width: 45px;
+  text-align: left;
+}
+
+.contribution-days-labels {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 88px;
+  padding: 4px 0;
+  width: 30px;
+}
+
+.contribution-day-label {
+  font-family: var(--secondary-font);
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  line-height: 10px;
+}
+
+.contribution-grid {
+  display: grid;
+  grid-template-columns: repeat(53, 1fr);
+  grid-template-rows: repeat(7, 1fr);
+  gap: 3px;
+}
+
+.contribution-day {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  background-color: #161b22;
+  transition: transform 0.1s ease;
+}
+
+.contribution-day:hover {
+  outline: 1px solid rgba(255, 255, 255, 0.5);
+  transform: scale(1.1);
+  z-index: 10;
+}
+
+/* Contribution levels */
+.contribution-day.level-0 { background-color: #2d2d2d; }
+.contribution-day.level-1 { background-color: #0e4429; }
+.contribution-day.level-2 { background-color: #006d32; }
+.contribution-day.level-3 { background-color: #26a641; }
+.contribution-day.level-4 { background-color: #39d353; }

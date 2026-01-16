@@ -125,6 +125,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
         handleMouseDown(e) {
             this.isDragging = true;
+            this.clearSnapZone();
+
+            // When dragging starts, if it was centered or snapped, 
+            // we should revert to fit-content if we want it to be strict
+            this.element.style.width = 'fit-content';
+            this.element.style.maxWidth = 'none';
 
             const rect = this.element.getBoundingClientRect();
             this.windowStartX = rect.left;
@@ -415,7 +421,11 @@ document.addEventListener('DOMContentLoaded', function() {
         if (activityLink) {
             activityLink.addEventListener('click', function(e) {
                 e.preventDefault();
-                windowManager.loadWindowFromTemplate('activity-window-template');
+                const activityWindow = windowManager.loadWindowFromTemplate('activity-window-template');
+                if (activityWindow) {
+                    // Initialize contribution graphs when activity window is created
+                    initializeContributionGraphs(activityWindow.element);
+                }
             });
         }
     }

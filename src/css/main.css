@@ -22,5 +22,8 @@
 /* Import macOS window styles */
 @import url('macos.css');
 
+/* Import GitHub Activity styles */
+@import url('github-activity.css');
+
 /* Import responsive styles */
 @import url('responsive.css');
