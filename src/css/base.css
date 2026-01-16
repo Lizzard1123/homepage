@@ -1,0 +1,81 @@
+/* CSS Variables */
+:root {
+  --bg-primary: #0d0d0d;
+  --bg-secondary: #1a1a1a;
+  --bg-tertiary: #242424;
+  --text-primary: #e6e6e6;
+  --text-secondary: #b0b0b0;
+  --text-muted: #707070;
+  --accent-primary: #60a5fa;
+  --accent-secondary: #86efac;
+  --accent-tertiary: #fbbf24;
+  --border-subtle: #2a2a2a;
+  --border-focus: #3f3f3f;
+  --shadow: rgba(0, 0, 0, 0.3);
+}
+
+/* Font Variables */
+:root {
+  --primary-font: 'Source Code Pro', sans-serif;
+  --secondary-font: 'Roboto Mono', monospace;
+}
+
+/* Font Smoothing */
+[style*="var(--secondary-font)"], .mono {
+  font-feature-settings: "kern" 1, "liga" 0, "calt" 1;
+  letter-spacing: 0;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  body {
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+/* Base Body Styles */
+body {
+  font-family: var(--primary-font);
+  font-size: 0.9375rem;
+  line-height: 1.75;
+  font-weight: 400;
+  text-rendering: geometricPrecision;
+  -webkit-font-smoothing: subpixel-antialiased;
+  -moz-osx-font-smoothing: auto;
+  font-feature-settings: "kern" 1, "liga" 0, "calt" 1;
+  padding: 0;
+  margin: 0;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+
+/* Selection */
+::selection {
+  background: var(--accent-primary);
+  color: var(--bg-primary);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-focus);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}

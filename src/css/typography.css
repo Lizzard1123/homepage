@@ -1,0 +1,74 @@
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--secondary-font);
+  line-height: 1.2;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+
+h1 {
+  font-size: 2rem;
+  margin: 0 0 0.75rem;
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+h2 {
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  margin: 3rem 0 1rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-subtle);
+  font-weight: 700;
+}
+
+h2:first-of-type {
+  border-top: none;
+  padding-top: 0;
+  margin-top: 2rem;
+}
+
+h3 {
+  font-size: 1.2rem;
+  margin: 2.5rem 0 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+h4 {
+  font-size: 1rem;
+  color: var(--accent-secondary);
+  font-weight: 600;
+  margin: 2rem 0 0.75rem;
+}
+
+p {
+  margin: 1rem 0;
+  color: var(--text-primary);
+}
+
+strong {
+  color: var(--accent-secondary);
+  font-weight: 600;
+}
+
+em {
+  font-style: italic;
+}
+
+/* Links */
+a {
+  color: var(--accent-primary);
+  text-decoration: none;
+  transition: all 0.2s ease;
+  border-radius: 2px;
+}
+
+a:hover {
+  color: #8bb8e8;
+}
+
+a:focus {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}

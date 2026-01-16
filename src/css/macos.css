@@ -1,0 +1,56 @@
+/* macOS Window Styles */
+.macos-window {
+  background: var(--bg-secondary);
+  border-radius: 16px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+}
+
+.macos-header {
+  background: linear-gradient(to bottom, var(--bg-secondary), var(--bg-tertiary));
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 24px 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.macos-traffic-lights {
+  display: flex;
+  gap: 8px;
+}
+
+.macos-traffic-light {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  position: relative;
+}
+
+.macos-traffic-light.red {
+  background: #ef4444;
+}
+
+.macos-traffic-light.yellow {
+  background: #eab308;
+}
+
+.macos-traffic-light.green {
+  background: #22c55e;
+}
+
+.macos-title {
+  flex: 1;
+  text-align: center;
+}
+
+.macos-title-text {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.macos-content {
+  padding: 32px 48px;
+}

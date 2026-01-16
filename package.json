@@ -1,0 +1,25 @@
+{
+  "name": "portfolio-website",
+  "version": "1.0.0",
+  "description": "A minimalist portfolio website",
+  "main": "index.html",
+  "keywords": [
+    "portfolio",
+    "website",
+    "static-site",
+    "html",
+    "css",
+    "javascript"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Lizzard1123/homepage"
+  },
+  "homepage": "https://lizzard1123.github.io/homepage",
+  "devDependencies": {},
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
