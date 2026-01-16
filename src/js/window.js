@@ -127,10 +127,12 @@ document.addEventListener('DOMContentLoaded', function() {
             this.isDragging = true;
             this.clearSnapZone();
 
-            // When dragging starts, if it was centered or snapped, 
-            // we should revert to fit-content if we want it to be strict
-            this.element.style.width = 'fit-content';
-            this.element.style.maxWidth = 'none';
+            // When dragging starts from a snapped state, revert to fit-content
+            // When dragging starts from centered state, keep current width
+            if (this.snapZone) {
+                this.element.style.width = 'fit-content';
+                this.element.style.maxWidth = 'none';
+            }
 
             const rect = this.element.getBoundingClientRect();
             this.windowStartX = rect.left;
@@ -251,21 +253,33 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
-        center() {
+        center(immediate = false) {
             this.clearSnapZone();
 
-            Object.assign(this.element.style, {
-                transition: 'all 0.6s ease',
+            const centerStyles = {
                 left: '50%',
                 top: this.options.TOP_POSITION,
                 transform: 'translateX(-50%)',
                 width: this.options.CENTERED_WIDTH,
                 maxWidth: this.options.MAX_CENTERED_WIDTH
-            });
+            };
 
-            setTimeout(() => {
+            if (immediate) {
+                Object.assign(this.element.style, centerStyles);
+                this.element.style.transition = 'none';
+                // Force a reflow to ensure transition: none is applied immediately if needed
+                this.element.offsetHeight; 
                 this.element.style.transition = '';
-            }, this.options.FADE_DURATION);
+            } else {
+                Object.assign(this.element.style, {
+                    ...centerStyles,
+                    transition: 'all 0.6s ease'
+                });
+
+                setTimeout(() => {
+                    this.element.style.transition = '';
+                }, this.options.FADE_DURATION);
+            }
         }
 
         remove() {
@@ -326,15 +340,19 @@ document.addEventListener('DOMContentLoaded', function() {
             // Clone the template content
             const windowElement = template.content.firstElementChild.cloneNode(true);
 
-            // Position the window
-            Object.assign(windowElement.style, {
-                left: '50px',
-                top: '50px',
-                transform: 'none'
-            });
-
-            document.body.appendChild(windowElement);
-            return this.createWindow(windowElement, options);
+            // Use window container if it exists, otherwise fallback to body
+            const container = document.getElementById('window-container') || document.body;
+            container.appendChild(windowElement);
+            
+            // Create the window instance
+            const windowInstance = this.createWindow(windowElement, options);
+            
+            // Set default centered state if not specified otherwise
+            if (options.centered !== false) {
+                windowInstance.center(true);
+            }
+            
+            return windowInstance;
         }
 
         createNewWindowFromTemplate(templateSelector, options = {}) {
