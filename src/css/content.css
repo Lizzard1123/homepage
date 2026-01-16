@@ -1,0 +1,100 @@
+/* Blockquotes */
+blockquote {
+  margin: 2rem 0;
+  padding: 1rem 1.5rem;
+  border-left: 4px solid var(--accent-secondary);
+  background: var(--bg-secondary);
+  font-style: italic;
+  color: var(--text-secondary);
+  box-shadow: 0 1px 2px var(--shadow);
+}
+
+/* Tables */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 2rem 0;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  display: table;
+  table-layout: auto;
+  background: var(--bg-secondary);
+  box-shadow: 0 1px 3px var(--shadow);
+}
+
+.content table {
+  display: block;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.content table table {
+  display: table;
+}
+
+thead {
+  border-bottom: 2px solid var(--border-focus);
+}
+
+th {
+  text-align: left;
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  color: var(--accent-secondary);
+  background: var(--bg-tertiary);
+  white-space: nowrap;
+  font-size: 0.875rem;
+}
+
+td {
+  padding: 0.65rem 1rem;
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  vertical-align: top;
+}
+
+td code {
+  font-size: 0.85em;
+  padding: 0.15em 0.4em;
+}
+
+tbody tr:hover {
+  background: var(--bg-tertiary);
+  transition: background 0.2s ease;
+}
+
+/* Lists */
+ul, ol {
+  margin: 1.25rem 0;
+  padding-left: 2rem;
+  line-height: 1.7;
+}
+
+li {
+  margin: 0.5rem 0;
+  color: var(--text-primary);
+}
+
+li > ul, li > ol {
+  margin: 0.6rem 0;
+}
+
+li::marker {
+  color: var(--accent-secondary);
+}
+
+/* Sub/Superscript */
+sub, sup {
+  font-size: 0.75em;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+sup {
+  top: -0.5em;
+}

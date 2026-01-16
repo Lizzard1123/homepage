@@ -1,0 +1,55 @@
+/* Section Tables */
+.section-table {
+  display: grid;
+  grid-template-columns: 4rem 1fr auto;
+  gap: 0.25rem 1rem;
+  margin-top: 1.5rem;
+  align-items: baseline;
+}
+
+.section-label {
+  font-family: var(--secondary-font);
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  text-align: right;
+}
+
+.section-title {
+  font-family: var(--secondary-font);
+  font-size: 1rem;
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+.section-title:hover {
+  color: var(--accent-primary);
+}
+
+.section-meta {
+  font-family: var(--secondary-font);
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  text-align: right;
+}
+
+.section-about {
+  grid-column: span 2;
+  font-size: 1rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  text-align: justify;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+}
+
+.section-about p {
+  margin: 0;
+}
+
+.section-spacer {
+  grid-column: span 3;
+  height: 0.75rem;
+}

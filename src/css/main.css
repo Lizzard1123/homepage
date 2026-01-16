@@ -10,7 +10,14 @@
 @import url('layout.css');
 
 /* Import component styles */
-@import url('components.css');
+@import url('sections.css');
+@import url('projects.css');
+@import url('posts.css');
+@import url('code.css');
+@import url('content.css');
+
+/* Import tooltip component */
+@import url('tooltip.css');
 
 /* Import macOS window styles */
 @import url('macos.css');

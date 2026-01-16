@@ -11,15 +11,12 @@
     "css",
     "javascript"
   ],
-  "author": "Your Name",
+  "author": "Ethan Gutierrez",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/Lizzard1123/homepage"
   },
   "homepage": "https://lizzard1123.github.io/homepage",
-  "devDependencies": {},
-  "engines": {
-    "node": ">=14.0.0"
-  }
+  "devDependencies": {}
 }

@@ -1,0 +1,26 @@
+/* Project Components */
+.project-list {
+  font-family: var(--secondary-font);
+}
+
+.project-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.25rem 0;
+  line-height: 1.4;
+}
+
+.project-link {
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+.project-link:hover {
+  color: var(--accent-primary);
+}
+
+.project-desc {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}

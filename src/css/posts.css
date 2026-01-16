@@ -1,0 +1,126 @@
+/* Post Components */
+.post-list {
+  margin: 0;
+  font-family: var(--secondary-font);
+}
+
+.post-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.25rem 0;
+  line-height: 1.4;
+  gap: 1rem;
+}
+
+.post-meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  white-space: nowrap;
+}
+
+.post-desc {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.post-date {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.post-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.25rem 0;
+  line-height: 1.4;
+}
+
+.post-line:hover {
+  background-color: rgba(255, 255, 255, 5%);
+  margin: 0 -0.5rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+.post-link {
+  color: var(--text-primary);
+  text-decoration: none;
+  flex: 1;
+  margin-right: 1rem;
+}
+
+.post-link:hover {
+  color: var(--accent-primary);
+}
+
+.post-excerpt {
+  margin: 0.75rem 0 0;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.read-more {
+  color: var(--accent-primary);
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+  display: inline-block;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+.read-more:hover {
+  color: var(--accent-secondary);
+}
+
+.post-header {
+  margin-bottom: 1.5rem;
+}
+
+.post-navigation {
+  display: flex;
+  justify-content: space-between;
+  margin: 2rem 0 1rem;
+  padding: 1rem 0;
+  border-top: 1px solid var(--border-subtle);
+  font-size: 0.95rem;
+}
+
+.post-nav-prev, .post-nav-next {
+  flex: 1;
+}
+
+.post-nav-next {
+  text-align: right;
+}
+
+.post-nav-label {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.post-nav-title {
+  color: var(--accent-primary);
+  font-weight: 500;
+}
+
+.post-footer {
+  margin-top: auto;
+  margin-bottom: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-subtle);
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  line-height: 1.3;
+}
+
+.post-footer .post-meta {
+  justify-content: center;
+  text-align: center;
+  margin: 0;
+  white-space: normal;
+}

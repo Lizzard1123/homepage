@@ -16,9 +16,49 @@
   gap: 8px;
 }
 
+.macos-header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .macos-traffic-lights {
   display: flex;
   gap: 8px;
+}
+
+.macos-nav-buttons {
+  display: flex;
+  gap: 8px;
+  margin-left: 16px;
+}
+
+.macos-nav-button {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.macos-nav-button:hover:not(:disabled) {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.macos-nav-button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.macos-nav-button svg {
+  stroke: currentColor;
 }
 
 .macos-traffic-light {
@@ -46,9 +86,38 @@
 }
 
 .macos-title-text {
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 16px;
+  font-weight: 600;
   color: var(--text-secondary);
+}
+
+.macos-header-links {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.macos-header-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.macos-header-link:hover {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.macos-header-link svg {
+  stroke: currentColor;
 }
 
 .macos-content {
