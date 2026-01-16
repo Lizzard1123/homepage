@@ -40,8 +40,8 @@ document.addEventListener('DOMContentLoaded', function() {
     windowElement.style.left = '50%';
     windowElement.style.top = '32px'; // Position at top with padding
     windowElement.style.transform = 'translateX(-50%)'; // Only center horizontally
-    windowElement.style.maxWidth = '1024px';
-    windowElement.style.width = '100%';
+    windowElement.style.maxWidth = 'none';
+    windowElement.style.width = 'calc(50% - 24px)';
 
     // Prevent text selection during drag
     windowElement.style.userSelect = 'none';
