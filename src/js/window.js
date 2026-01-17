@@ -90,8 +90,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 WebkitUserSelect: 'none',
                 MozUserSelect: 'none',
                 msUserSelect: 'none',
-                resize: 'none',
-                cursor: 'grab'
+                resize: 'none'
             });
 
             this.header.style.cursor = 'grab';
