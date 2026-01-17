@@ -6,23 +6,37 @@
 // Time periods configuration - easily add new periods here
 const TIME_PERIODS = [
     {
-        label: 'Amazon Robotics',
-        start: new Date(2024, 0, 6), // Jan 6, 2024
-        end: new Date(2024, 6, 12),   // July 14, 2024
-        color: '#FF9900'
-    },
-    {
         label: 'Loandock',
         start: new Date(2024, 6, 18), // Jan 6, 2024
         end: new Date(2025, 11, 31),   // July 14, 2024
         color: '#2759CB'
     },
     {
+        label: 'Amazon Robotics',
+        start: new Date(2024, 0, 6), // Jan 6, 2024
+        end: new Date(2024, 6, 12),   // July 14, 2024
+        color: '#FF9900'
+    },
+    {
         // Aug 2022 - Dec 2023
         label: 'TBD Aerospace',
-        start: new Date(2022, 7, 1), // Aug 2022
-        end: new Date(2023, 11, 31),   // Dec 2023
+        start: new Date(2022, 9, 3), // Aug 2022
+        end: new Date(2023, 11, 5),   // Dec 2023
         color: '#C7363C'
+    },
+    {
+        // April 2022 – August 2022
+        label: 'Machine Learning Safety Scholars',
+        start: new Date(2022, 5, 20), // April 2022
+        end: new Date(2022, 7, 29),   // August 2022
+        color: '#0bb6ff'
+    },
+    {
+        // November 2018 - May 2022
+        label: 'VEX & FRC Robotics',
+        start: new Date(2018, 10, 1), // Nov 2018
+        end: new Date(2022, 4, 15),   // May 2022
+        color: '#660185'
     }
 ];
 
@@ -343,7 +357,9 @@ function renderYearRow(container, year, contributions) {
                 const date = new Date(year, 0, dayIndex + 1);
                 dayElement.title = `${contributionCount} contributions on ${date.toDateString()}`;
             } else {
-                dayElement.title = 'No data';
+                // Hide squares for days that don't exist
+                dayElement.style.opacity = '0';
+                dayElement.style.pointerEvents = 'none';
             }
             grid.appendChild(dayElement);
         }
