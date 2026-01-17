@@ -3,6 +3,8 @@
  * Handles data generation, rendering, and scaling of the contribution grid.
  */
 
+// contributionData is loaded globally from contributions.js
+
 function initializeContributionGraphs(windowElement) {
     const graphsContainer = windowElement.querySelector('#contribution-graphs');
     if (!graphsContainer) return;
@@ -27,9 +29,9 @@ function initializeContributionGraphs(windowElement) {
     scaler.appendChild(monthsRow);
 
     // Generate and render each year
-    const years = [2026, 2025, 2024, 2023, 2022, 2021, 2020, 2019];
+    const years = [2026, 2025, 2024, 2023, 2022, 2021, 2020];
     years.forEach(year => {
-        const yearData = generateYearContributionData(year);
+        const yearData = getYearContributionData(year, window.contributionData);
         renderYearRow(scaler, year, yearData);
     });
 
@@ -67,10 +69,10 @@ function renderYearRow(container, year, contributions) {
     yearLabel.textContent = year;
     yearRow.appendChild(yearLabel);
 
-    // Day Labels (Mon, Wed, Fri)
+    // Day Labels (Sun, Mon, Tue, Wed, Thu, Fri, Sat)
     const daysLabels = document.createElement('div');
     daysLabels.className = 'contribution-days-labels';
-    ['', 'Mon', '', 'Wed', '', 'Fri', ''].forEach(day => {
+    ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].forEach(day => {
         const dayLabel = document.createElement('div');
         dayLabel.className = 'contribution-day-label';
         dayLabel.textContent = day;
@@ -85,15 +87,21 @@ function renderYearRow(container, year, contributions) {
     const jan1 = new Date(year, 0, 1);
     const startDayOfWeek = jan1.getDay();
 
-    for (let week = 0; week < 53; week++) {
-        for (let dayOfWeek = 0; dayOfWeek < 7; dayOfWeek++) {
+    // GitHub layout: days of week as rows, weeks as columns
+    for (let dayOfWeek = 0; dayOfWeek < 7; dayOfWeek++) {
+        for (let week = 0; week < 53; week++) {
             const dayIndex = week * 7 + dayOfWeek - startDayOfWeek;
             const contributionCount = (dayIndex >= 0 && dayIndex < contributions.length) ? contributions[dayIndex] : 0;
             const level = getContributionLevel(contributionCount);
 
             const dayElement = document.createElement('div');
             dayElement.className = `contribution-day level-${level}`;
-            dayElement.title = `${contributionCount} contributions on ${new Date(year, 0, dayIndex + 1).toDateString()}`;
+            if (dayIndex >= 0 && dayIndex < contributions.length) {
+                const date = new Date(year, 0, dayIndex + 1);
+                dayElement.title = `${contributionCount} contributions on ${date.toDateString()}`;
+            } else {
+                dayElement.title = 'No data';
+            }
             grid.appendChild(dayElement);
         }
     }
@@ -101,19 +109,17 @@ function renderYearRow(container, year, contributions) {
     container.appendChild(yearRow);
 }
 
-function generateYearContributionData(year) {
-    const isLeapYear = (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
-    const daysInYear = isLeapYear ? 366 : 365;
-    const contributions = [];
-
-    for (let i = 0; i < daysInYear; i++) {
-        const baseProbability = year >= 2023 ? 0.4 : year >= 2020 ? 0.25 : 0.15;
-        const hasContribution = Math.random() < baseProbability;
-        const count = hasContribution ? Math.floor(Math.random() * 20) + 1 : 0;
-        contributions.push(count);
+function getYearContributionData(year, data) {
+    // Get data from contributions.js, or return empty array if no data available
+    if (data && data[year]) {
+        return data[year];
     }
 
-    return contributions;
+    // Return empty array for years with no data
+    console.log(`No contribution data available for ${year}`);
+    const isLeapYear = (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+    const daysInYear = isLeapYear ? 366 : 365;
+    return new Array(daysInYear).fill(0);
 }
 
 function getContributionLevel(count) {
@@ -123,3 +129,6 @@ function getContributionLevel(count) {
     if (count <= 12) return 3;
     return 4;
 }
+
+// Make function available globally for non-module scripts
+window.initializeContributionGraphs = initializeContributionGraphs;
