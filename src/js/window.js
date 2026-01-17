@@ -131,6 +131,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // When dragging starts from centered state, keep current width
             if (this.snapZone) {
                 this.element.style.width = 'fit-content';
+                this.element.style.height = 'auto';
                 this.element.style.maxWidth = 'none';
             }
 
@@ -234,8 +235,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
             Object.assign(this.element.style, {
                 width: this.options.WINDOW_WIDTH,
+                height: 'calc(100vh - 64px)',
                 maxWidth: 'none',
-                transition: 'left, top, transform 0.3s ease',
+                transition: 'left, top, transform, height 0.3s ease',
                 left: zone === SnapZone.LEFT ? this.options.LEFT_SNAP_POSITION : this.options.RIGHT_SNAP_POSITION,
                 top: this.options.TOP_POSITION,
                 transform: 'none'
@@ -261,6 +263,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 top: this.options.TOP_POSITION,
                 transform: 'translateX(-50%)',
                 width: this.options.CENTERED_WIDTH,
+                height: 'auto',
                 maxWidth: this.options.MAX_CENTERED_WIDTH
             };
 
@@ -545,8 +548,23 @@ document.addEventListener('DOMContentLoaded', function() {
         if (activityLink) {
             activityLink.addEventListener('click', function(e) {
                 e.preventDefault();
-                const activityWindow = windowManager.loadWindowFromTemplate('activity-window-template');
+                const activityWindow = windowManager.loadWindowFromTemplate('activity-window-template', { centered: false });
                 if (activityWindow) {
+                    // Position window down and to the left of clicked link
+                    const linkRect = activityLink.getBoundingClientRect();
+                    const windowWidth = activityWindow.element.offsetWidth;
+                    const windowHeight = activityWindow.element.offsetHeight;
+
+                    // Position down and to the left of the link
+                    const newLeft = Math.max(0, linkRect.left - windowWidth + 20); // 20px padding from right edge
+                    const newTop = linkRect.bottom + 10; // 10px below the link
+
+                    Object.assign(activityWindow.element.style, {
+                        left: newLeft + 'px',
+                        top: newTop + 'px',
+                        transform: 'none'
+                    });
+
                     // Initialize contribution graphs when activity window is created
                     initializeContributionGraphs(activityWindow.element);
                 }

@@ -2,10 +2,11 @@
 .contribution-graphs {
   padding: 0;
   width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center; /* Center children horizontally */
-  overflow: hidden;
+  overflow: visible;
 }
 
 .contribution-legend-container {
