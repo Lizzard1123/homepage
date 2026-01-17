@@ -51,6 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
             this.setupTrafficLights();
             this.setupStyling();
             this.createSnapZones();
+            this.setupFocusEvents();
         }
 
         setupEventListeners() {
@@ -294,6 +295,17 @@ document.addEventListener('DOMContentLoaded', function() {
             }, this.options.FADE_DURATION);
         }
 
+        setupFocusEvents() {
+            // Bring window to front when clicked or focused
+            this.element.addEventListener('mousedown', () => {
+                this.windowManager.bringToFront(this);
+            });
+
+            this.element.addEventListener('focus', () => {
+                this.windowManager.bringToFront(this);
+            }, true); // Use capture phase for focus events
+        }
+
         setZIndex(zIndex) {
             this.element.style.zIndex = zIndex;
         }
@@ -327,6 +339,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
         freeSnapZone(zone) {
             this.snapZones[zone] = null;
+        }
+
+        bringToFront(window) {
+            window.setZIndex(this.nextZIndex++);
         }
 
         loadWindowFromTemplate(templateId, options = {}) {
