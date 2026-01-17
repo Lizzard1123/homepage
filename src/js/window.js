@@ -292,6 +292,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 this.element.remove();
                 this.leftSnapZone.remove();
                 this.rightSnapZone.remove();
+                this.windowManager.removeWindow(this);
             }, this.options.FADE_DURATION);
         }
 
@@ -343,6 +344,96 @@ document.addEventListener('DOMContentLoaded', function() {
 
         bringToFront(window) {
             window.setZIndex(this.nextZIndex++);
+        }
+
+        removeWindow(window) {
+            // Remove window from the array
+            const index = this.windows.indexOf(window);
+            if (index > -1) {
+                this.windows.splice(index, 1);
+            }
+
+            // Check if all windows are closed
+            if (this.windows.length === 0) {
+                this.showRestartButton();
+            }
+        }
+
+        showRestartButton() {
+            // Remove existing restart button if it exists
+            const existingButton = document.getElementById('restart-button');
+            if (existingButton) {
+                existingButton.remove();
+            }
+
+            // Create restart button
+            const restartButton = document.createElement('button');
+            restartButton.id = 'restart-button';
+            restartButton.textContent = 'restart';
+            restartButton.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: var(--bg-primary);
+                border: 1px solid var(--border-color);
+                border-radius: 6px;
+                color: var(--text-primary);
+                padding: 16px 32px;
+                font-family: 'Source Code Pro', monospace;
+                font-size: 16px;
+                cursor: pointer;
+                opacity: 0;
+                transition: opacity 2s ease-in;
+                z-index: 1000;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            `;
+
+            // Add hover effect
+            restartButton.addEventListener('mouseenter', () => {
+                restartButton.style.background = 'var(--bg-secondary)';
+            });
+            restartButton.addEventListener('mouseleave', () => {
+                restartButton.style.background = 'var(--bg-primary)';
+            });
+
+            // Add click handler
+            restartButton.addEventListener('click', () => {
+                this.restart();
+            });
+
+            // Add to page
+            document.body.appendChild(restartButton);
+
+            // Trigger fade in after a short delay
+            setTimeout(() => {
+                restartButton.style.opacity = '1';
+            }, 100);
+        }
+
+        restart() {
+            // Immediately remove restart button
+            const restartButton = document.getElementById('restart-button');
+            if (restartButton) {
+                restartButton.remove();
+            }
+
+            // Recreate the main window
+            const mainWindow = this.loadWindowFromTemplate('main-window-template');
+            if (mainWindow) {
+                // Setup Activity link to create new activity windows
+                const activityLink = mainWindow.element.querySelector('.activity-link');
+                if (activityLink) {
+                    activityLink.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const activityWindow = windowManager.loadWindowFromTemplate('activity-window-template');
+                        if (activityWindow) {
+                            // Initialize contribution graphs when activity window is created
+                            initializeContributionGraphs(activityWindow.element);
+                        }
+                    });
+                }
+            }
         }
 
         loadWindowFromTemplate(templateId, options = {}) {
