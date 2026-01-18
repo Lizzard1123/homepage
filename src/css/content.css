@@ -98,3 +98,56 @@ sub {
 sup {
   top: -0.5em;
 }
+
+/* Debug Window Styles */
+.debug-content {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-primary);
+}
+
+.debug-content h2 {
+  color: var(--accent-primary);
+  margin-bottom: 1rem;
+  font-size: 1.2em;
+}
+
+.debug-content h3 {
+  color: var(--accent-secondary);
+  margin: 1.5rem 0 0.5rem 0;
+  font-size: 1.1em;
+}
+
+.debug-content ul {
+  margin: 1rem 0;
+  padding-left: 1.5rem;
+}
+
+.debug-content li {
+  margin: 0.25rem 0;
+}
+
+.debug-logs {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  padding: 1rem;
+  font-family: 'Source Code Pro', monospace;
+  font-size: 12px;
+  line-height: 1.4;
+  margin: 1rem 0;
+}
+
+.debug-logs p {
+  margin: 0.25rem 0;
+  padding: 0;
+}
+
+.debug-logs p:first-child {
+  margin-top: 0;
+}
+
+.debug-logs p:last-child {
+  margin-bottom: 0;
+}

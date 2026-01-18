@@ -60,6 +60,7 @@
     <script src="src/data/contributions.js"></script>
     <script src="src/js/github-activity.js"></script>
     <script src="src/js/window.js"></script>
+    <script src="src/js/debug.js"></script>
   </head>
   <body>
     <div
@@ -357,6 +358,55 @@
             class="contribution-graphs"
           >
             <!-- GitHub-style contribution graphs will be rendered here directly -->
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <template id="debug-window-template">
+      <div class="macos-window" style="width: 600px;">
+        <div class="macos-header">
+          <div class="macos-header-left">
+            <div class="macos-traffic-lights">
+              <div class="macos-traffic-light red"></div>
+              <div class="macos-traffic-light yellow"></div>
+              <div class="macos-traffic-light green"></div>
+            </div>
+          </div>
+          <div class="macos-title">
+            <span class="macos-title-text">Debug Console</span>
+          </div>
+        </div>
+        <div class="macos-content">
+          <div class="site-container" style="max-width: none; margin: 0; padding: 0; min-height: auto">
+            <main class="content">
+              <div class="debug-content">
+                <h2>Debug Information</h2>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+
+                <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
+                <h3>System Status</h3>
+                <ul>
+                  <li>Lorem ipsum dolor sit amet</li>
+                  <li>Consectetur adipiscing elit</li>
+                  <li>Sed do eiusmod tempor incididunt</li>
+                  <li>Ut labore et dolore magna aliqua</li>
+                </ul>
+
+                <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet.</p>
+
+                <h3>Debug Logs</h3>
+                <div class="debug-logs">
+                  <p>[INFO] Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                  <p>[WARN] Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                  <p>[ERROR] Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.</p>
+                  <p>[INFO] Duis aute irure dolor in reprehenderit in voluptate velit esse cillum.</p>
+                </div>
+
+                <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident.</p>
+              </div>
+            </main>
           </div>
         </div>
       </div>

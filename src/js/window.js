@@ -597,6 +597,18 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize the system
     const windowManager = new WindowManager();
 
+    // Expose window manager globally for debug functionality
+    window.windowManager = windowManager;
+
+    // Expose a function to open debug window
+    window.openDebugWindow = function() {
+        const debugWindow = windowManager.loadWindowFromTemplate('debug-window-template', { centered: false });
+        if (debugWindow) {
+            debugWindow.center(true);
+        }
+        return debugWindow;
+    };
+
     // Load and create the main window from template
     const mainWindow = windowManager.loadWindowFromTemplate('main-window-template');
     if (mainWindow) {
