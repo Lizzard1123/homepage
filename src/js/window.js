@@ -424,19 +424,76 @@ document.addEventListener('DOMContentLoaded', function() {
             // Recreate the main window
             const mainWindow = this.loadWindowFromTemplate('main-window-template');
             if (mainWindow) {
-                // Setup Activity link to create new activity windows
-                const activityLink = mainWindow.element.querySelector('.activity-link');
-                if (activityLink) {
-                    activityLink.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        const activityWindow = windowManager.loadWindowFromTemplate('activity-window-template');
-                        if (activityWindow) {
-                            // Initialize contribution graphs when activity window is created
-                            initializeContributionGraphs(activityWindow.element);
-                        }
-                    });
-                }
+                this.setupWindowLinks(mainWindow.element);
             }
+        }
+
+        setupWindowLinks(windowElement) {
+            const manager = this;
+
+            // Setup Activity link
+            const activityLink = windowElement.querySelector('.activity-link');
+            if (activityLink) {
+                activityLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const activityWindow = manager.loadWindowFromTemplate('activity-window-template', { centered: false });
+                    if (activityWindow) {
+                        manager.positionWindowRelativeToLink(activityWindow.element, activityLink);
+                        initializeContributionGraphs(activityWindow.element);
+                    }
+                });
+            }
+
+            // Setup Projects link
+            const projectsLink = windowElement.querySelector('.projects-link');
+            if (projectsLink) {
+                projectsLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const projectsWindow = manager.loadWindowFromTemplate('projects-window-template', { centered: false });
+                    if (projectsWindow) {
+                        manager.positionWindowRelativeToLink(projectsWindow.element, projectsLink);
+                    }
+                });
+            }
+
+            // Setup Post links
+            const postLinks = windowElement.querySelectorAll('.post-link');
+            postLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const postUrl = this.getAttribute('href');
+
+                    let templateId;
+                    if (postUrl.includes('reinforcement-learning-scoundrel')) {
+                        templateId = 'reinforcement-learning-post-template';
+                    } else if (postUrl.includes('drone-development')) {
+                        templateId = 'drone-development-post-template';
+                    } else {
+                        console.error('Unknown post URL:', postUrl);
+                        return;
+                    }
+
+                    const postWindow = manager.loadWindowFromTemplate(templateId, { centered: false });
+                    if (postWindow) {
+                        manager.positionWindowRelativeToLink(postWindow.element, link);
+                    }
+                });
+            });
+        }
+
+        positionWindowRelativeToLink(windowElement, linkElement) {
+            const linkRect = linkElement.getBoundingClientRect();
+            const windowWidth = windowElement.offsetWidth;
+            
+            // Position down and to the left of the link
+            const newLeft = Math.max(0, linkRect.left - windowWidth + 20); // 20px padding from right edge
+            const newTop = linkRect.bottom + 10; // 10px below the link
+
+            Object.assign(windowElement.style, {
+                left: newLeft + 'px',
+                top: newTop + 'px',
+                transform: 'none'
+            });
         }
 
         loadWindowFromTemplate(templateId, options = {}) {
@@ -543,71 +600,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Load and create the main window from template
     const mainWindow = windowManager.loadWindowFromTemplate('main-window-template');
     if (mainWindow) {
-        // Setup Activity link to create new activity windows
-        const activityLink = document.querySelector('.activity-link');
-        if (activityLink) {
-            activityLink.addEventListener('click', function(e) {
-                e.preventDefault();
-                const activityWindow = windowManager.loadWindowFromTemplate('activity-window-template', { centered: false });
-                if (activityWindow) {
-                    // Position window down and to the left of clicked link
-                    const linkRect = activityLink.getBoundingClientRect();
-                    const windowWidth = activityWindow.element.offsetWidth;
-                    const windowHeight = activityWindow.element.offsetHeight;
-
-                    // Position down and to the left of the link
-                    const newLeft = Math.max(0, linkRect.left - windowWidth + 20); // 20px padding from right edge
-                    const newTop = linkRect.bottom + 10; // 10px below the link
-
-                    Object.assign(activityWindow.element.style, {
-                        left: newLeft + 'px',
-                        top: newTop + 'px',
-                        transform: 'none'
-                    });
-
-                    // Initialize contribution graphs when activity window is created
-                    initializeContributionGraphs(activityWindow.element);
-                }
-            });
-        }
-
-        // Setup Post links to create new post windows
-        const postLinks = document.querySelectorAll('.post-link');
-        postLinks.forEach(link => {
-            link.addEventListener('click', function(e) {
-                e.preventDefault();
-                const postUrl = this.getAttribute('href');
-
-                // Determine which template to use based on the URL
-                let templateId;
-                if (postUrl.includes('reinforcement-learning-scoundrel')) {
-                    templateId = 'reinforcement-learning-post-template';
-                } else if (postUrl.includes('drone-development')) {
-                    templateId = 'drone-development-post-template';
-                } else {
-                    console.error('Unknown post URL:', postUrl);
-                    return;
-                }
-
-                const postWindow = windowManager.loadWindowFromTemplate(templateId, { centered: false });
-
-                if (postWindow) {
-                    // Position window down and to the left of clicked link
-                    const linkRect = this.getBoundingClientRect();
-                    const windowWidth = postWindow.element.offsetWidth;
-                    const windowHeight = postWindow.element.offsetHeight;
-
-                    // Position down and to the left of the link
-                    const newLeft = Math.max(0, linkRect.left - windowWidth + 20); // 20px padding from right edge
-                    const newTop = linkRect.bottom + 10; // 10px below the link
-
-                    Object.assign(postWindow.element.style, {
-                        left: newLeft + 'px',
-                        top: newTop + 'px',
-                        transform: 'none'
-                    });
-                }
-            });
-        });
+        windowManager.setupWindowLinks(mainWindow.element);
     }
 });

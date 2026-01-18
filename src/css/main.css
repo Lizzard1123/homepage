@@ -15,6 +15,7 @@
 @import url('posts.css');
 @import url('code.css');
 @import url('content.css');
+@import url('timeline.css');
 
 /* Import tooltip component */
 @import url('tooltip.css');
