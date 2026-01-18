@@ -570,5 +570,44 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         }
+
+        // Setup Post links to create new post windows
+        const postLinks = document.querySelectorAll('.post-link');
+        postLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const postUrl = this.getAttribute('href');
+
+                // Determine which template to use based on the URL
+                let templateId;
+                if (postUrl.includes('reinforcement-learning-scoundrel')) {
+                    templateId = 'reinforcement-learning-post-template';
+                } else if (postUrl.includes('drone-development')) {
+                    templateId = 'drone-development-post-template';
+                } else {
+                    console.error('Unknown post URL:', postUrl);
+                    return;
+                }
+
+                const postWindow = windowManager.loadWindowFromTemplate(templateId, { centered: false });
+
+                if (postWindow) {
+                    // Position window down and to the left of clicked link
+                    const linkRect = this.getBoundingClientRect();
+                    const windowWidth = postWindow.element.offsetWidth;
+                    const windowHeight = postWindow.element.offsetHeight;
+
+                    // Position down and to the left of the link
+                    const newLeft = Math.max(0, linkRect.left - windowWidth + 20); // 20px padding from right edge
+                    const newTop = linkRect.bottom + 10; // 10px below the link
+
+                    Object.assign(postWindow.element.style, {
+                        left: newLeft + 'px',
+                        top: newTop + 'px',
+                        transform: 'none'
+                    });
+                }
+            });
+        });
     }
 });
