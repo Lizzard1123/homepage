@@ -255,13 +255,14 @@ sup {
 
 /* Picture Frames */
 .picture-frame {
-  display: inline-block;
+  display: block;
   border: 3px solid var(--border-focus);
   border-radius: 8px;
   padding: 1rem;
   background: var(--bg-primary);
   box-shadow: 0 4px 12px var(--shadow);
-  margin: 1rem 0;
+  margin: 1rem auto;
+  max-width: fit-content;
 }
 
 .picture-frame img {
@@ -269,6 +270,7 @@ sup {
   max-width: 100%;
   height: auto;
   border-radius: 4px;
+  margin: 0 auto;
 }
 
 .frame-caption {
