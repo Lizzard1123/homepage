@@ -15,95 +15,131 @@ document.addEventListener('DOMContentLoaded', function() {
             if (event.key === '`') {
                 event.preventDefault();
 
-                // Check if template store is already open
-                if (templateStoreInstance && templateStoreInstance.element && document.body.contains(templateStoreInstance.element)) {
-                    // Bring existing template store to front
-                    templateStoreInstance.windowManager.bringToFront(templateStoreInstance);
-                } else {
-                    // Create new template store window
-                    templateStoreInstance = window.openDebugWindow();
-                    // Initialize KaTeX and Mermaid after window is created
-                    setTimeout(initializeTemplateStore, 100);
+                try {
+                    // Check if template store is already open
+                    if (templateStoreInstance && templateStoreInstance.element && document.body.contains(templateStoreInstance.element)) {
+                        // Bring existing template store to front
+                        if (templateStoreInstance.windowManager) {
+                            templateStoreInstance.windowManager.bringToFront(templateStoreInstance);
+                        }
+                    } else {
+                        // Create new template store window
+                        templateStoreInstance = window.openDebugWindow();
+                        if (templateStoreInstance) {
+                            // Initialize KaTeX and Mermaid after window is created
+                            setTimeout(initializeTemplateStore, 50);
+                        }
+                    }
+                } catch (e) {
+                    console.error('Error opening debug window:', e);
                 }
             }
         });
     }
 
-    // Initialize KaTeX, Prism.js, and Mermaid for the template store
+    // Initialize KaTeX, Highlight.js, and Mermaid for the template store
     function initializeTemplateStore() {
-        if (templateStoreInstance && templateStoreInstance.element) {
-            const content = templateStoreInstance.element.querySelector('.debug-content');
+        if (!templateStoreInstance || !templateStoreInstance.element) return;
 
-            if (content) {
-                // Initialize syntax highlighting with Highlight.js
-                if (window.hljs) {
-                    // Configure highlight.js for common languages
-                    setTimeout(() => {
-                        // Highlight all code blocks in the template store
-                        content.querySelectorAll('pre code:not(.language-mermaid)').forEach((codeBlock) => {
-                            window.hljs.highlightElement(codeBlock);
-                        });
-                    }, 200);
-                }
+        const content = templateStoreInstance.element.querySelector('.debug-content');
+        if (!content) return;
 
-                // Initialize KaTeX for math expressions
-                if (window.renderMathInElement) {
-                    window.renderMathInElement(content, {
-                        delimiters: [
-                            {left: '$$', right: '$$', display: true},
-                            {left: '\\[', right: '\\]', display: true},
-                            {left: '$', right: '$', display: false},
-                            {left: '\\(', right: '\\)', display: false}
-                        ],
-                        throwOnError: false
+        // 1. Handle Mermaid diagrams FIRST to avoid raw code flash
+        if (window.mermaid) {
+            const mermaidContainers = [];
+            // Find all mermaid code blocks
+            const mermaidBlocks = content.querySelectorAll('pre code.language-mermaid');
+            
+            mermaidBlocks.forEach((block) => {
+                const pre = block.parentElement;
+                if (!pre) return;
+
+                const mermaidDiv = document.createElement('div');
+                mermaidDiv.className = 'mermaid';
+                mermaidDiv.textContent = block.textContent.trim();
+                
+                // Replace pre with the mermaid div
+                pre.replaceWith(mermaidDiv);
+                mermaidContainers.push(mermaidDiv);
+            });
+
+            if (mermaidContainers.length > 0) {
+                try {
+                    window.mermaid.initialize({
+                        startOnLoad: false, // We'll run it manually
+                        theme: 'base',
+                        themeVariables: {
+                            primaryColor: '#1a1a1a',
+                            primaryTextColor: '#e6e6e6',
+                            primaryBorderColor: '#86efac',
+                            lineColor: '#707070',
+                            secondaryColor: '#242424',
+                            tertiaryColor: '#0d0d0d',
+                            background: '#1a1a1a',
+                            mainBkg: '#1a1a1a',
+                            secondBkg: '#242424',
+                            textColor: '#e6e6e6',
+                            fontSize: '14px',
+                            fontFamily: 'Source Code Pro, monospace',
+                            edgeLabelBackground: '#1a1a1a'
+                        },
+                        flowchart: {
+                            useMaxWidth: true,
+                            htmlLabels: true,
+                            curve: 'linear',
+                            padding: 10,
+                            nodeSpacing: 30,
+                            rankSpacing: 40
+                        }
                     });
-                }
 
-                // Initialize Mermaid diagrams (James Akl style)
-                if (window.mermaid) {
-                    // Convert pre code.language-mermaid to mermaid divs first
-                    content.querySelectorAll('pre code.language-mermaid').forEach((block) => {
-                        const pre = block.parentElement;
-                        const mermaidDiv = document.createElement('div');
-                        mermaidDiv.className = 'mermaid';
-                        mermaidDiv.textContent = block.textContent.trim();
-                        pre.replaceWith(mermaidDiv);
-                    });
-
-                    // Initialize mermaid after DOM changes
-                    setTimeout(() => {
-                        window.mermaid.initialize({
-                            startOnLoad: true,
-                            theme: 'base',
-                            themeVariables: {
-                                primaryColor: '#1a1a1a',
-                                primaryTextColor: '#e6e6e6',
-                                primaryBorderColor: '#86efac',
-                                lineColor: '#707070',
-                                secondaryColor: '#242424',
-                                tertiaryColor: '#0d0d0d',
-                                background: '#1a1a1a',
-                                mainBkg: '#1a1a1a',
-                                secondBkg: '#242424',
-                                textColor: '#e6e6e6',
-                                fontSize: '14px',
-                                fontFamily: 'Source Code Pro, monospace',
-                                edgeLabelBackground: '#1a1a1a'
-                            },
-                            flowchart: {
-                                useMaxWidth: true,
-                                htmlLabels: true,
-                                curve: 'linear',
-                                padding: 10,
-                                nodeSpacing: 30,
-                                rankSpacing: 40
-                            }
+                    // Force mermaid to render all diagrams
+                    window.mermaid.run().then(() => {
+                        // Fade in diagrams after rendering is complete
+                        setTimeout(() => {
+                            mermaidContainers.forEach(container => {
+                                container.style.opacity = '1';
+                            });
+                        }, 100);
+                    }).catch(err => {
+                        console.error('Mermaid render error:', err);
+                        // Still try to show them if there's an error
+                        mermaidContainers.forEach(container => {
+                            container.style.opacity = '1';
                         });
-
-                        // Force mermaid to render all diagrams
-                        window.mermaid.run();
-                    }, 200);
+                    });
+                } catch (e) {
+                    console.error('Mermaid initialization error:', e);
                 }
+            }
+        }
+
+        // 2. Initialize syntax highlighting with Highlight.js
+        if (window.hljs) {
+            // Highlight all code blocks that weren't converted to mermaid
+            content.querySelectorAll('pre code').forEach((codeBlock) => {
+                try {
+                    window.hljs.highlightElement(codeBlock);
+                } catch (e) {
+                    console.error('Highlight.js error:', e);
+                }
+            });
+        }
+
+        // 3. Initialize KaTeX for math expressions
+        if (window.renderMathInElement) {
+            try {
+                window.renderMathInElement(content, {
+                    delimiters: [
+                        {left: '$$', right: '$$', display: true},
+                        {left: '\\[', right: '\\]', display: true},
+                        {left: '$', right: '$', display: false},
+                        {left: '\\(', right: '\\)', display: false}
+                    ],
+                    throwOnError: false
+                });
+            } catch (e) {
+                console.error('KaTeX error:', e);
             }
         }
     }

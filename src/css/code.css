@@ -38,16 +38,6 @@ pre code {
 }
 
 /* Mermaid Diagrams */
-.mermaid {
-  display: flex;
-  justify-content: center;
-  margin: 2rem 0;
-}
-
-.mermaid svg {
-  max-height: 500px;
-}
-
 .mermaid .node rect {
   ry: 3 !important;
   rx: 3 !important;

@@ -165,34 +165,6 @@ sup {
   font-weight: 600;
 }
 
-/* Enhanced code blocks for Prism.js */
-.debug-content pre {
-  background: var(--bg-secondary);
-  border-left: 3px solid var(--border-focus);
-  border-radius: 0;
-  padding: 1.25rem 1.5rem;
-  margin: 1.75rem 0;
-  overflow-x: auto;
-  font-family: var(--secondary-font);
-  font-size: 0.875rem;
-  line-height: 1.6;
-  font-weight: 400;
-  color: var(--text-primary);
-  box-shadow: 0 1px 3px var(--shadow);
-  position: relative;
-}
-
-.debug-content pre code {
-  background: transparent;
-  border: none;
-  padding: 0;
-  margin: 0;
-  font-size: inherit;
-  font-weight: 400;
-  color: inherit;
-  white-space: pre;
-}
-
 /* Code editor-like styling for Highlight.js */
 .debug-content pre {
   background: #1e1e1e !important;
@@ -366,10 +338,25 @@ dd {
 }
 
 /* Mermaid Diagrams in Debug Content */
+.debug-content pre:has(code.language-mermaid) {
+  height: 500px;
+  min-height: 500px;
+  margin: 2rem 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  visibility: hidden;
+  overflow: hidden;
+}
+
 .debug-content .mermaid {
   display: flex;
   justify-content: center;
   margin: 2rem 0;
+  opacity: 0;
+  transition: opacity 0.4s ease-in-out;
+  height: 500px;
+  min-height: 500px;
 }
 
 .debug-content .mermaid svg {
