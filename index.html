@@ -57,6 +57,15 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="src/css/main.css" />
+    <!-- KaTeX for math expressions -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+    <!-- Highlight.js for VS Code-like syntax highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <!-- Mermaid for diagrams -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
     <script src="src/data/contributions.js"></script>
     <script src="src/js/github-activity.js"></script>
     <script src="src/js/window.js"></script>
@@ -364,7 +373,7 @@
     </template>
 
     <template id="debug-window-template">
-      <div class="macos-window" style="width: 600px;">
+      <div class="macos-window" style="width: 900px; height: 700px;">
         <div class="macos-header">
           <div class="macos-header-left">
             <div class="macos-traffic-lights">
@@ -374,40 +383,147 @@
             </div>
           </div>
           <div class="macos-title">
-            <span class="macos-title-text">Debug Console</span>
+            <span class="macos-title-text">Template Store</span>
           </div>
         </div>
-        <div class="macos-content">
-          <div class="site-container" style="max-width: none; margin: 0; padding: 0; min-height: auto">
-            <main class="content">
-              <div class="debug-content">
-                <h2>Debug Information</h2>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+        <div class="macos-content debug-content">
+          <p>Mathematical proofs can be difficult to read—even for the person who wrote them. Some of this difficulty is <strong>intrinsic</strong>: abstract structures, nested quantifiers, long dependency chains. But some is incidental, arising not from the logical content but from choices in exposition. Proofs tend to be compressed, and less often refactored for comprehension.</p>
 
-                <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+          <table>
+            <thead>
+              <tr>
+                <th>Component</th>
+                <th>Description</th>
+                <th>Location</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>libcudart.so</code></td>
+                <td>CUDA Runtime library providing high-level API</td>
+                <td><code>/usr/lib/x86_64-linux-gnu/</code></td>
+              </tr>
+              <tr>
+                <td><code>libcuda.so</code></td>
+                <td>CUDA Driver API for low-level GPU access</td>
+                <td><code>/usr/lib/x86_64-linux-gnu/</code></td>
+              </tr>
+            </tbody>
+          </table>
 
-                <h3>System Status</h3>
-                <ul>
-                  <li>Lorem ipsum dolor sit amet</li>
-                  <li>Consectetur adipiscing elit</li>
-                  <li>Sed do eiusmod tempor incididunt</li>
-                  <li>Ut labore et dolore magna aliqua</li>
-                </ul>
+          <p>Disciplines that manage complex information tend to develop organizational systems. Accounting has double-entry bookkeeping, standardized ledgers, and audit trails. Software has <strong>type systems</strong>, version control, explicit interfaces, and refactoring practices. Law has citation systems and structured argumentation.</p>
 
-                <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet.</p>
+          <pre><code class="language-mermaid">graph TD
+    A["Application (PyTorch, TensorFlow, custom)"]
+    B["libcudart.so (Runtime API, user-space)"]
+    C["libcuda.so (Driver API, user-space)"]
+    D["nvidia.ko (GPU Driver, OS kernel-space)"]
+    E["GPU Hardware"]
 
-                <h3>Debug Logs</h3>
-                <div class="debug-logs">
-                  <p>[INFO] Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                  <p>[WARN] Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-                  <p>[ERROR] Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.</p>
-                  <p>[INFO] Duis aute irure dolor in reprehenderit in voluptate velit esse cillum.</p>
-                </div>
+    A -->|calls| B
+    B -->|calls| C
+    C -->|ioctl syscalls| D
+    D -->|commands| E
 
-                <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident.</p>
-              </div>
-            </main>
+    style A fill:#1a1a1a,stroke:#86efac,stroke-width:2px,color:#86efac,text-align:left
+    style B fill:#1e2a3a,stroke:#60a5fa,stroke-width:2px,color:#60a5fa,text-align:left
+    style C fill:#1e2a3a,stroke:#60a5fa,stroke-width:2px,color:#60a5fa,text-align:left
+    style D fill:#3a2a1e,stroke:#fbbf24,stroke-width:3px,color:#fbbf24,text-align:left
+    style E fill:#1a1a1a,stroke:#86efac,stroke-width:2px,color:#86efac,text-align:left
+
+    classDef default font-family:Source Code Pro</code></pre>
+
+          <p>Mathematics has conventions too, but they tend toward implicit patterns absorbed through practice rather than explicit structure in the writing itself. Difficulty with a proof is usually attributed to the reader&rsquo;s background—but sometimes the writing itself could be clearer.</p>
+
+          <blockquote>
+            <p>Proofs that mark their semantic structure don't become less rigorous. Making the logical moves visible can sometimes reveal gaps or ambiguities that compressed prose obscures.</p>
+            <cite>— James Akl, "Proof Clarity"</cite>
+          </blockquote>
+
+          <p>There may be historical reasons. Mathematical practice evolved partly in oral contexts, where a proof was explained and discussed. Compression made sense when you could say "here's what I mean" in real time. Written proofs inherit the compression without the accompanying dialogue.</p>
+
+          <pre><code class="language-python">def fibonacci(n):
+    """Calculate the nth Fibonacci number."""
+    if n <= 1:
+        return n
+    return fibonacci(n-1) + fibonacci(n-2)
+
+# Example usage
+result = fibonacci(10)
+print(f"Fibonacci(10) = {result}")</code></pre>
+
+          <p>Some inline code examples: use <code>cudaMalloc</code> for memory allocation, <code>cudaMemcpy</code> for data transfer, and <code>cudaLaunchKernel</code> for kernel execution. The <code>__global__</code> keyword marks device functions.</p>
+
+          <pre><code class="language-javascript">const fibonacci = (n) => {
+  if (n <= 1) return n;
+  return fibonacci(n - 1) + fibonacci(n - 2);
+};
+
+// Example usage
+const result = fibonacci(10);
+console.log(`Fibonacci(10) = ${result}`);</code></pre>
+
+          <pre><code class="language-typescript">interface Point {
+  x: number;
+  y: number;
+}
+
+function distance(p1: Point, p2: Point): number {
+  return Math.sqrt((p2.x - p1.x) ** 2 + (p2.y - p1.y) ** 2);
+}
+
+const origin: Point = { x: 0, y: 0 };
+const target: Point = { x: 3, y: 4 };
+console.log(distance(origin, target)); // 5</code></pre>
+
+          <pre><code class="language-css">.dark-theme {
+  --bg-primary: #0d0d0d;
+  --bg-secondary: #1a1a1a;
+  --text-primary: #e6e6e6;
+  --accent-primary: #60a5fa;
+}
+
+.macos-window {
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+}</code></pre>
+
+          <pre><code class="language-bash">#!/bin/bash
+# CUDA installation script
+set -e
+
+echo "Installing CUDA Toolkit..."
+wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-ubuntu2004.pin
+sudo mv cuda-ubuntu2004.pin /etc/apt/preferences.d/cuda-repository-pin-600
+wget https://developer.download.nvidia.com/compute/cuda/12.1.0/local_installers/cuda_12.1.0_530.30.02_linux.run
+sudo sh cuda_12.1.0_530.30.02_linux.run
+
+echo "CUDA installation completed!"</code></pre>
+
+          <p>The question here isn't formal verification. It's more modest: what would it look like to make the semantic structure of a proof more visible in the writing? Each move in a proof has a semantic role. Without aiming to be exhaustive, some common ones:</p>
+
+          <ol>
+            <li><strong>Goal</strong>—stating what needs to be shown. The main goal comes from the theorem; subgoals arise from proof strategies.</li>
+            <li><strong>Introducing objects</strong>—bringing a new object into scope (a variable, constant, function, set, etc.), with a specific quantifier status.</li>
+            <li><strong>Assuming</strong>—temporarily taking a proposition as given, opening a scope that will later close.</li>
+            <li><strong>Deriving</strong>—obtaining a new fact from what's established, by applying a definition, inference rule, or prior result.</li>
+            <li><strong>Concluding</strong>—discharging a goal and closing a scope.</li>
+          </ol>
+
+          <p>The quadratic formula is \(x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}\), which solves equations of the form \(ax^2 + bx + c = 0\).</p>
+
+          <p>The limit definition of a derivative:</p>
+          \[f'(x) = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h}\]
+
+          <p>Reference external sources like <a href="https://jamesakl.com/">James Akl's website</a> or link to <a href="#internal-section">internal sections</a>. For citations, use superscript numbers<sup>1</sup> or author-date format (Smith 2023).</p>
+
+          <div class="picture-frame">
+            <img src="https://via.placeholder.com/300x200/242424/e6e6e6?text=Framed+Image" alt="Framed placeholder image">
+            <div class="frame-caption">Figure 1: Example of a framed image with caption</div>
           </div>
+
+          <p>These are matters of exposition, not rigor. A proof can be correct without being clear. Proofs that mark their semantic structure don't become less rigorous. Making the logical moves visible can sometimes reveal gaps or ambiguities that compressed prose obscures.</p>
         </div>
       </div>
     </template>

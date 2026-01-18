@@ -151,3 +151,340 @@ sup {
 .debug-logs p:last-child {
   margin-bottom: 0;
 }
+
+/* Debug Window Content */
+.debug-content {
+  padding: 2rem;
+  overflow-y: auto;
+  height: 100%;
+}
+
+/* Inline word highlighting (James Akl style) */
+.debug-content strong {
+  color: var(--accent-secondary);
+  font-weight: 600;
+}
+
+/* Enhanced code blocks for Prism.js */
+.debug-content pre {
+  background: var(--bg-secondary);
+  border-left: 3px solid var(--border-focus);
+  border-radius: 0;
+  padding: 1.25rem 1.5rem;
+  margin: 1.75rem 0;
+  overflow-x: auto;
+  font-family: var(--secondary-font);
+  font-size: 0.875rem;
+  line-height: 1.6;
+  font-weight: 400;
+  color: var(--text-primary);
+  box-shadow: 0 1px 3px var(--shadow);
+  position: relative;
+}
+
+.debug-content pre code {
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font-size: inherit;
+  font-weight: 400;
+  color: inherit;
+  white-space: pre;
+}
+
+/* Code editor-like styling for Highlight.js */
+.debug-content pre {
+  background: #1e1e1e !important;
+  border: 1px solid #3e3e42 !important;
+  border-radius: 6px !important;
+  padding: 1.5rem !important;
+  margin: 1.5rem 0 !important;
+  overflow-x: auto !important;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Source Code Pro', monospace !important;
+  font-size: 13px !important;
+  line-height: 1.45 !important;
+  color: #d4d4d4 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
+  position: relative !important;
+}
+
+.debug-content pre code {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  font-size: inherit !important;
+  color: inherit !important;
+  white-space: pre !important;
+}
+
+/* Highlight.js VS Code-like theme overrides */
+.debug-content .hljs {
+  background: #1e1e1e !important;
+  color: #d4d4d4 !important;
+}
+
+.debug-content .hljs-keyword {
+  color: #569cd6 !important;
+}
+
+.debug-content .hljs-string {
+  color: #ce9178 !important;
+}
+
+.debug-content .hljs-number {
+  color: #b5cea8 !important;
+}
+
+.debug-content .hljs-comment {
+  color: #6a9955 !important;
+}
+
+.debug-content .hljs-function {
+  color: #dcdcaa !important;
+}
+
+.debug-content .hljs-title {
+  color: #4ec9b0 !important;
+}
+
+.debug-content .hljs-params {
+  color: #9cdcfe !important;
+}
+
+/* Picture Frames */
+.picture-frame {
+  display: inline-block;
+  border: 3px solid var(--border-focus);
+  border-radius: 8px;
+  padding: 1rem;
+  background: var(--bg-primary);
+  box-shadow: 0 4px 12px var(--shadow);
+  margin: 1rem 0;
+}
+
+.picture-frame img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+
+.frame-caption {
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  text-align: center;
+  font-style: italic;
+}
+
+/* Callouts */
+.callout {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 8px;
+  border-left: 4px solid;
+  background: var(--bg-secondary);
+  margin: 1rem 0;
+}
+
+.callout-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.callout-content h4 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1em;
+  font-weight: 600;
+}
+
+.callout-content p {
+  margin: 0;
+  line-height: 1.6;
+}
+
+.callout-info {
+  border-left-color: var(--accent-primary);
+  background: rgba(96, 165, 250, 0.1);
+}
+
+.callout-info .callout-content h4 {
+  color: var(--accent-primary);
+}
+
+.callout-warning {
+  border-left-color: var(--accent-tertiary);
+  background: rgba(251, 191, 36, 0.1);
+}
+
+.callout-warning .callout-content h4 {
+  color: var(--accent-tertiary);
+}
+
+.callout-success {
+  border-left-color: #10b981;
+  background: rgba(16, 185, 129, 0.1);
+}
+
+.callout-success .callout-content h4 {
+  color: #10b981;
+}
+
+/* Definition Lists */
+dl {
+  margin: 1.25rem 0;
+}
+
+dt {
+  font-weight: 600;
+  color: var(--accent-secondary);
+  margin-bottom: 0.5rem;
+}
+
+dd {
+  margin: 0 0 1.5rem 1rem;
+  color: var(--text-primary);
+  line-height: 1.6;
+  padding-left: 1rem;
+  border-left: 2px solid var(--border-subtle);
+}
+
+/* Math Expressions */
+.debug-content .katex {
+  font-size: 1.1em;
+}
+
+.debug-content .katex-display {
+  margin: 1rem 0;
+  text-align: center;
+}
+
+/* Mermaid Diagrams in Debug Content */
+.debug-content .mermaid {
+  display: flex;
+  justify-content: center;
+  margin: 2rem 0;
+}
+
+.debug-content .mermaid svg {
+  max-height: 500px;
+}
+
+.debug-content .mermaid .node rect {
+  ry: 3 !important;
+  rx: 3 !important;
+}
+
+/* Enhanced Blockquotes for Debug Content */
+.debug-content blockquote {
+  position: relative;
+  margin: 2rem 0;
+  padding: 1.5rem 2rem;
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+  border-left: 4px solid var(--accent-secondary);
+  border-radius: 0 8px 8px 0;
+  box-shadow: 0 2px 8px var(--shadow);
+}
+
+.debug-content blockquote cite {
+  display: block;
+  margin-top: 1rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-style: normal;
+  text-align: right;
+}
+
+.debug-content blockquote cite:before {
+  content: "— ";
+}
+
+/* Enhanced Code Blocks for Debug Content */
+.debug-content pre {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-focus);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+  overflow-x: auto;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  box-shadow: 0 2px 6px var(--shadow);
+}
+
+.debug-content pre code {
+  background: transparent;
+  border: none;
+  padding: 0;
+  font-size: inherit;
+}
+
+/* Enhanced Tables for Debug Content */
+.debug-content table {
+  background: var(--bg-tertiary);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px var(--shadow);
+}
+
+.debug-content thead {
+  background: var(--bg-secondary);
+  border-bottom: 2px solid var(--border-focus);
+}
+
+.debug-content th {
+  background: var(--bg-secondary);
+  color: var(--accent-secondary);
+  font-weight: 600;
+  padding: 1rem;
+  text-align: left;
+  border-bottom: none;
+}
+
+.debug-content td {
+  padding: 0.875rem 1rem;
+  border-bottom: 1px solid var(--border-subtle);
+  vertical-align: top;
+}
+
+.debug-content tbody tr:hover {
+  background: rgba(96, 165, 250, 0.05);
+}
+
+/* Enhanced Images */
+.debug-content img {
+  border-radius: 6px;
+  box-shadow: 0 2px 8px var(--shadow);
+}
+
+/* Links in Debug Content */
+.debug-content a {
+  color: var(--accent-primary);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease;
+}
+
+.debug-content a:hover {
+  border-bottom-color: var(--accent-primary);
+}
+
+.debug-content a[href^="#"] {
+  color: var(--accent-secondary);
+}
+
+.debug-content a[href^="#"]:hover {
+  border-bottom-color: var(--accent-secondary);
+}
+
+/* Superscript for Citations */
+.debug-content sup {
+  font-size: 0.7em;
+  vertical-align: super;
+  line-height: 0;
+  color: var(--accent-tertiary);
+}
