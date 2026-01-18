@@ -76,7 +76,7 @@
       style="
         min-height: 100vh;
         background: var(--bg-primary);
-        padding: 32px 16px;
+        padding: 0;
       "
     >
       <div id="window-container" style="max-width: 1024px; margin: 0 auto">
@@ -191,7 +191,7 @@
     </template>
 
     <template id="projects-window-template">
-      <div class="macos-window" style="width: 800px;">
+      <div class="macos-window">
         <div class="macos-header">
           <div class="macos-header-left">
             <div class="macos-traffic-lights">
@@ -205,7 +205,8 @@
           </div>
         </div>
         <div class="macos-content">
-          <div class="timeline">
+          <div class="site-container" style="max-width: 75ch; margin: 0 auto; padding: 0; min-height: auto; text-align: left">
+            <div class="timeline">
             <div class="timeline-item">
               <div class="timeline-date">2024-12-01</div>
               <div class="timeline-content">
@@ -230,6 +231,7 @@
                 <div class="timeline-description">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</div>
               </div>
             </div>
+          </div>
           </div>
         </div>
       </div>
@@ -373,7 +375,7 @@
     </template>
 
     <template id="debug-window-template">
-      <div class="macos-window" style="width: 900px; height: 700px;">
+      <div class="macos-window">
         <div class="macos-header">
           <div class="macos-header-left">
             <div class="macos-traffic-lights">

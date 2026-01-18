@@ -1,7 +1,22 @@
 /* Responsive Design */
 
 /* Mobile Layout */
-@media (max-width: 500px) {
+@media (max-width: 768px) {
+  #window-container {
+    width: 100%;
+    margin: 0 auto;
+    box-sizing: border-box;
+  }
+
+  .macos-window {
+    width: calc(100% - 32px) !important;
+    left: 16px !important;
+    top: 16px !important;
+    max-height: calc(100vh - 32px) !important; /* Ensure 16px bottom margin */
+    transform: none !important;
+    max-width: 100% !important;
+  }
+
   .section-table {
     display: grid;
     grid-template-columns: 1fr auto;

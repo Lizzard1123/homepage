@@ -10,10 +10,16 @@ document.addEventListener('DOMContentLoaded', function() {
         Z_INDEX_INCREMENT: 1,
         LEFT_SNAP_POSITION: '16px',
         RIGHT_SNAP_POSITION: 'calc(50% + 8px)',
-        TOP_POSITION: '32px',
+        TOP_POSITION: '16px',
         WINDOW_WIDTH: 'calc(50% - 24px)',
         CENTERED_WIDTH: '100%',
-        MAX_CENTERED_WIDTH: '1024px'
+        MAX_CENTERED_WIDTH: '1024px',
+        MOBILE_BREAKPOINT: 768 // px - below this, windows open centered instead of side-by-side
+    };
+
+    // Utility Functions
+    const Utils = {
+        isMobile: () => window.innerWidth <= CONFIG.MOBILE_BREAKPOINT
     };
 
     // Snap Zone States
@@ -102,7 +108,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 position: fixed;
                 top: ${this.options.TOP_POSITION};
                 width: ${this.options.WINDOW_WIDTH};
-                height: calc(100vh - 64px);
+                height: calc(100vh - 32px);
                 background: radial-gradient(circle, rgba(192, 192, 192, 0.05) 0%, rgba(192, 192, 192, 0.15) 100%);
                 border: 1px solid rgba(192, 192, 192, 0.3);
                 box-shadow: inset 0 0 30px rgba(192, 192, 192, 0.2);
@@ -111,6 +117,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 opacity: 0;
                 transition: opacity 0.3s ease;
                 z-index: 0;
+                display: ${Utils.isMobile() ? 'none' : 'block'};
             `;
 
             this.leftSnapZone = document.createElement('div');
@@ -167,13 +174,18 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         handleWindowResize() {
-            // Update snap zone sizes
+            // Update snap zone sizes and visibility
             const style = `calc(50% - 24px)`;
+            const isMobile = Utils.isMobile();
+
             this.leftSnapZone.style.width = style;
-            this.leftSnapZone.style.height = 'calc(100vh - 64px)';
+            this.leftSnapZone.style.height = 'calc(100vh - 32px)';
+            this.leftSnapZone.style.display = isMobile ? 'none' : 'block';
+
             this.rightSnapZone.style.width = style;
-            this.rightSnapZone.style.height = 'calc(100vh - 64px)';
+            this.rightSnapZone.style.height = 'calc(100vh - 32px)';
             this.rightSnapZone.style.left = this.options.RIGHT_SNAP_POSITION;
+            this.rightSnapZone.style.display = isMobile ? 'none' : 'block';
         }
 
         constrainToViewport(x, y) {
@@ -196,6 +208,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         updateSnapIndicators(x, maxX) {
+            // Don't show snap indicators on mobile
+            if (Utils.isMobile()) {
+                this.leftSnapZone.style.opacity = '0';
+                this.rightSnapZone.style.opacity = '0';
+                return;
+            }
+
             const isNearLeft = x <= this.options.SNAP_THRESHOLD;
             const isNearRight = x >= maxX - this.options.SNAP_THRESHOLD;
 
@@ -214,6 +233,11 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         attemptSnap() {
+            // Disable snapping on mobile devices
+            if (Utils.isMobile()) {
+                return;
+            }
+
             const rect = this.element.getBoundingClientRect();
             const snapThreshold = this.options.SNAP_THRESHOLD;
             const isNearLeft = rect.left <= snapThreshold;
@@ -235,7 +259,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             Object.assign(this.element.style, {
                 width: this.options.WINDOW_WIDTH,
-                height: 'calc(100vh - 64px)',
+                height: 'calc(100vh - 32px)',
                 maxWidth: 'none',
                 transition: 'left, top, transform, height 0.3s ease',
                 left: zone === SnapZone.LEFT ? this.options.LEFT_SNAP_POSITION : this.options.RIGHT_SNAP_POSITION,
@@ -271,7 +295,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 Object.assign(this.element.style, centerStyles);
                 this.element.style.transition = 'none';
                 // Force a reflow to ensure transition: none is applied immediately if needed
-                this.element.offsetHeight; 
+                this.element.offsetHeight;
                 this.element.style.transition = '';
             } else {
                 Object.assign(this.element.style, {
@@ -438,7 +462,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     e.preventDefault();
                     const activityWindow = manager.loadWindowFromTemplate('activity-window-template', { centered: false });
                     if (activityWindow) {
-                        manager.positionWindowRelativeToLink(activityWindow.element, activityLink);
+                        manager.positionWindowRelativeToLink(activityWindow.element, activityLink, activityWindow);
                         initializeContributionGraphs(activityWindow.element);
                     }
                 });
@@ -451,7 +475,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     e.preventDefault();
                     const projectsWindow = manager.loadWindowFromTemplate('projects-window-template', { centered: false });
                     if (projectsWindow) {
-                        manager.positionWindowRelativeToLink(projectsWindow.element, projectsLink);
+                        manager.positionWindowRelativeToLink(projectsWindow.element, projectsLink, projectsWindow);
                     }
                 });
             }
@@ -475,16 +499,31 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     const postWindow = manager.loadWindowFromTemplate(templateId, { centered: false });
                     if (postWindow) {
-                        manager.positionWindowRelativeToLink(postWindow.element, link);
+                        manager.positionWindowRelativeToLink(postWindow.element, link, postWindow);
                     }
                 });
             });
         }
 
-        positionWindowRelativeToLink(windowElement, linkElement) {
+        positionWindowRelativeToLink(windowElement, linkElement, windowInstance) {
+            // On mobile, center the window instead of positioning relative to link
+            if (Utils.isMobile()) {
+                if (windowInstance) {
+                    windowInstance.center(true);
+                    // Ensure the window is brought to front and focused on mobile
+                    this.bringToFront(windowInstance);
+                    // Try to focus the window content to make it active
+                    const content = windowInstance.element.querySelector('.macos-content');
+                    if (content) {
+                        content.focus();
+                    }
+                }
+                return;
+            }
+
             const linkRect = linkElement.getBoundingClientRect();
             const windowWidth = windowElement.offsetWidth;
-            
+
             // Position down and to the left of the link
             const newLeft = Math.max(0, linkRect.left - windowWidth + 20); // 20px padding from right edge
             const newTop = linkRect.bottom + 10; // 10px below the link
