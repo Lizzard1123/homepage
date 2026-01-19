@@ -503,6 +503,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 });
             });
+
         }
 
         positionWindowRelativeToLink(windowElement, linkElement, windowInstance) {
@@ -533,6 +534,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 top: newTop + 'px',
                 transform: 'none'
             });
+
         }
 
         loadWindowFromTemplate(templateId, options = {}) {
