@@ -164,11 +164,14 @@
                 <span class="section-label">About</span>
                 <div class="section-about">
                   Passionate about powering <strong>physical systems</strong> with <strong>machine learning</strong> and <strong>AI</strong> to bring big ideas into reality.
-                  A stubborn amount of quick, constant <strong>iteration</strong> through failed experiments, broken prototypes, and unorthodox approaches is what leads me to find <strong>success</strong>.
+                  A stubborn amount of quick, <strong>constant iteration</strong> through failed experiments, broken prototypes, and unorthodox approaches is what leads me to find <strong>success</strong>.
+                  <br><br>
+                  Previous ventures have included co-founding <strong>Loandock</strong>: a financial mortgage platform using <strong>Gen AI</strong> to speed up compliance, personalize options for homebuyers, and help loan officers close more deals,
+                  and <strong>Amazon Robotics</strong> where I worked on robotic <strong>teleoperation</strong>, robotic <strong>manipulation</strong>, and <strong>human-robot interfaces</strong>.
                 </div>
                 <div class="section-spacer"></div>
                 <span class="section-label">Posts</span>
-                <a href="posts/reinforcement-learning-scoundrel/" class="section-title post-link">Using Reinforcement learning to play scoundrel</a>
+                <a href="posts/reinforcement-learning-scoundrel/" class="section-title post-link">Using Reinforcement learning to play Scoundrel</a>
                 <span class="section-meta">2026-01-17</span>
                 <div class="section-spacer"></div>
                 <span class="section-label"></span>
@@ -317,24 +320,131 @@
                   <h1>The programming surrounding drone development</h1>
                 </header>
                 <div class="post-content">
-                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+                  <h2>Background</h2>
+                  <p>Georgia Tech provides its first year students an opportunity to join from a selection of <a href="https://housing.gatech.edu/explore-housing/first-year-and-transfer-living-learning-communities" target="_blank">Living Learning Communities</a>. These LLCs range from focusing on research, global policy, or entrepreneurship. When I was faced with this decision, while they all were things that I wanted to learn more about, I chose to join <a href="https://grandchallenges.gatech.edu/" target="_blank">Grand Challenges</a>, a program that pushed students to think big, move fast, and put students on a trajectory to make change through entrepreneurship.</p>
+                  <p>I was working with a set of very talented teammates, and thus we chose to combat a very challenging problem plaguing the American interior. Wildfires are devastating natural disasters that are being exasperated by Climate Change and poor local governmental policy. As such, the federal government, namely the United States Department of Agriculture, is repeatedly forced to <a href="https://www.usda.gov/about-usda/news/press-releases/2017/09/14/forest-service-wildland-fire-suppression-costs-exceed-2-billion" target="_blank">balloon its spending on fighting fires</a>.</p>
+                  <p>Taking inspiration from startups on the rise, like Andruil, Skydio, and Shield AI, we found that recent advances in drone technology, battery economics, and camera fidelity, could serve as a potent resource to apply towards our issue at hand.</p>
 
-                  <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+                  <h2>Quick survey on the field</h2>
+                  <h3>Conventional Firefighting aviation</h3>
 
-                  <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.</p>
+                  <div class="picture-frame">
+                    <img src="src/images/drone/cl415.jpg" alt="A Canadair CL415 in action">
+                    <div class="frame-caption">A <a href="https://www.youtube.com/watch?v=gX-DSYm9A1M" target="_blank">Canadair CL415</a> in action</div>
+                  </div>
 
-                  <p>Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?</p>
+                  <p>The <a href="https://www.youtube.com/watch?v=gX-DSYm9A1M" target="_blank">Canadair CL415</a>, in my opinion, is one of the most draw dropping pieces of technology to exist in this field, and the pilots that fly them are some of the most talented and brave pilots. In the industry, this model of aircraft is called a scooper. The idea behind this strategy is that a cargo-style plan can bring nearby water to drop on top of nearby wildfires instead of circling back to the homebase. Wildly enough, this is represented in practice also, with around <a href="https://www.rand.org/content/dam/rand/pubs/monographs/2012/RAND_MG1234.pdf#page=18&search=%22two-thirds%22" target="_blank">two-thirds of all wildfires</a> being within 10 miles of a body of water large enough for these types of planes to operate. Supporting these scoopers are tankers: large, retro-fitted 737 styled planes that drop a filled tank of water or fire retardant on fires. And lastly there are <a href="https://www.youtube.com/watch?v=mOPxhksjyJo" target="_blank">helicopters</a>, which are like scoopers but wildly more versatile, (like pulling water out of a pool flexibly), but can only do small targeted attacks.</p>
 
-                  <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga.</p>
+                  <h3>Thermal satellite constellations</h3>
 
-                  <p>Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus.</p>
+                  <div class="picture-frame">
+                    <img src="src/images/drone/wild-fire-satellite-constellation.jpg" alt="A wildfire satellite in action">
+                    <div class="frame-caption"><a href="https://spire.com/press-release/canadian-space-agency-assigns-can72-million-contract-to-spire-global-canada-to-design-wildfiresat-mission/" target="_blank">Spire and OroraTech</a>'s wildfire satellite</div>
+                  </div>
 
-                  <p>Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.</p>
+                  <p>This approach is among the newest and highest tech solutions towards aiding the information game of wildfires. Companies like <a href="https://spacenews.com/spire-and-ororatech-win-canadian-space-agency-contract-for-wildfire-detection-satellites/" target="_blank">Spire and OroraTech</a> propose building out a constellation of <a href="https://spacenews.com/spire-and-ororatech-win-canadian-space-agency-contract-for-wildfire-detection-satellites/" target="_blank">satellites</a> that will use infrared imagery to monitor wildfire prone areas. Information depravity is what allows wildfires to become out of control and need costly solutions. Satellites provide an avenue to monitor large swaths of land all at once and provide temperature anomaly reports to authorities much faster than relying on citizen tips, scarce firewatch towers, or consumer aviation reports. Spire and OroraTech plan to have a small operational group of 6 satellites in 2029. Then we will see the efficacy of thermal imaging from space in terms of resolution, latency, and false positives.</p>
 
-                  <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.</p>
+                  <h3>Weather observation balloons</h3>
+
+                  <div class="picture-frame">
+                    <img src="src/images/drone/weather-balloon.webp" alt="A weather balloon in action">
+                    <div class="frame-caption"><a href="https://www.technologyreview.com/2024/07/19/1095125/balloons-will-surf-wind-currents-to-track-wildfires/" target="_blank">Urban Sky</a>'s weather balloon</div>
+                  </div>
+
+                  <p>Recently, interest in local, mobile, imaging solutions have seen research spike in the use of weather balloons to monitor wildfires. These machines provide a good balance between the need to be mobile to monitor a fire as it moves, but also be large enough and move slow enough to prevent confusion in the air with active firefighting aviation.</p>
+
+                  <div class="picture-frame">
+                    <img src="src/images/drone/thermal-fire.webp" alt="thermal imaging of a wildfire">
+                    <div class="frame-caption"><a href="https://www.technologyreview.com/2024/07/19/1095125/balloons-will-surf-wind-currents-to-track-wildfires/" target="_blank">Urban Sky</a>'s thermal imaging of a wildfire</div>
+                  </div>
+
+                  <p>These machines provide a very detailed view of fire frontiers, can float in the air for a long time, and can be placed at the discretion of the fire authorities to provide the most critical information needed. <a href="https://thelastmile.forterra.com/rising-above-the-flames-how-urban-skys-microballoon-is-transforming-wildfire-management/" target="_blank">Urban Sky</a> is a startup pioneering this approach, with multiple contracts won in the space.</p>
+
+                  <h3>Static camera posts</h3>
+
+                  <div class="picture-frame">
+                    <img src="src/images/drone/fire-cam.webp" alt="ALERTWildfire's static camera post installation">
+                    <div class="frame-caption"><a href="https://yubanet.com/regional/truckee-fire-unr-and-tahoe-prosperity-center-install-new-alertwildfire-camera/" target="_blank">ALERTWildfire</a>'s camera installation in Truckee, California</div>
+                  </div>
+
+                  <p>Academia has predominantly researched the use of setting up static wildfire cameras to monitor sections of forest that are fire prone. These cameras run machine learning models that check for any visible traces of smoke on the horizon. When found, they can narrow the search down quickly, or triangulate fire position in the early stages. </p>
+                  
+                  <div class="picture-frame">
+                    <img src="src/images/drone/camera-overview.png" alt="ALERTWildfire's static camera post">
+                    <div class="frame-caption"><a href="https://www.alertwildfire.org/" target="_blank">ALERTWildfire</a>'s static camera overview of Lake Tahoe</div>
+                  </div>
+
+                  <p>The University of Nevada has created a group called <a href="https://www.alertwildfire.org/" target="_blank">ALERTWildfire</a>, which is an awesome public display of this technology in action, allowing users to view the livestreams of these cameras themselves, and see the coverage overlaid on an interactive map.</p>
+
+                  <h2>Our approach</h2>
+                  <p>What we found through our research of the space was that wildfires are an information game, both in the early and late stages of the fight. The faster a fire is detected, the easier it is to put out. Once the fire has passed a critical mass, then information is needed to allocate resources to protect infrastructure, resources, people, and direct firefighters on the ground to safe locations and points of attack. We wanted to combine the current strategies in play today to an all in one platform that has the advantages of each category.</p>
+
+                  <div class="picture-frame">
+                    <img src="src/images/drone/scientific-graph.png" alt="Non-scientific scientific graph of water needed vs fire time">
+                    <div class="frame-caption">Hypothetical graph showing relationship between water needed and response time</div>
+                  </div>
+
+                  <p>Notably this is what were were optimizing for:</p>
+                  <ul>
+                    <li>Mobile coverage to provide a programmable mesh of resources and attention of fire prone areas</li>
+                    <li>Quick first response to mitigate or dampen early stages of fire spread</li>
+                    <li>Continual reusability in the case the first strike is missed or was not enough</li>
+                  </ul>
+                  
+                  <div class="picture-frame">
+                    <img src="src/images/drone/tbd-logo.png" alt="TBD Aerospace logo">
+                  </div>
+
+                  <p>What <a href="https://lizzard1123.github.io/tbd-aerospace-landing-page/" target="_blank">TBD Aerospace</a> wanted was the following:</p>
+                  <blockquote>
+                    <p>We aim to have an optimized fleet of autonomous fixed-wing UAVs for a higher volume of water transport per day compared to current aerial solutions. Because the drones would act as a mix between both firefighting planes and helicopters, we could carry the advantage of picking up water in small areas, accurately placing water in front of fire lines, and assisting firefighters. However, our design will be able to fly more efficiently, fly with no risk to the pilot, and fly day and night.</p>
+                  </blockquote>
+
+                  <h2>Technical specifics</h2>
+                  <p>We designed and built 2 versions of the fixed wing drone, with one designed around being able to carry some small amount of water, and one verifying control code, sensors, and manufacturing approaches.</p>
+
+                  <div class="picture-frame">
+                    <img src="src/images/drone/plane-1-cad.png" alt="Mk-0.5 CAD design">
+                    <div class="frame-caption">Mk-0.5 CAD design</div>
+                  </div>
+
+                  <div class="picture-frame">
+                    <img src="src/images/drone/plane-2-cad.png" alt="Mk-1 CAD design">
+                    <div class="frame-caption">Mk-1 CAD design</div>
+                  </div>
+
+                  <h2>Software approaches</h2>
+                  <p>As drones have become more accessible for the consumer, the need for just as accessible flight control software also emerged. Ardupilot combines the use of consumer programmable microcontrollers with integrations for high speed flight computers that handle flight controllers. This synergy allows for a split brain control approach where the arduino handles external communication, sensor fusion, and any less-than-critical drone functions, while the flight computer handles the high frequency control loops between the drone actuators and motors. In addition, ardupilot has libraries that enable land, sea, and air vehicles to operate completely autonomously, showing that the code there encompasses the full scope of remotely controlled vehicles.</p>
+
+                  <p>To be able to iterate quicker for our use case, we did not start with a full ardupilot integration, and planned to integrate it later via a ground station controller. This meant our first steps were to create a way to control our system with a physical controller, communication stack, and motor controllers.</p>
+
+                  <div class="picture-frame">
+                    <img src="src/images/drone/block-diagram.png" alt="System block diagram of the drone system">
+                    <div class="frame-caption">System block diagram our drone control system</div>
+                  </div>
+
+                  <p>The system block diagram of the drone system was separated by the ground station and the onboard system.</p>
+
+                  <p>The ground station would communicate over radio to the onboard controller what the target setpoints of each of the peripherals should be. The target setpoints would then update the individual PID controllers for each of the control surfaces and thrust. This allowed us to have an assistive control loop in place to combat any experienced friction between setups and unaccounted for force during flight.</p>
+
+                  <p>Initial testing of this system was successful, and we had complete control over the vehicle and its capabilities over low latency via a human operator.</p>
+
+                  <div class="picture-frame">
+                    <img src="src/images/drone/plane-1.jpg" alt="Mk-0.5 drone prototype">
+                    <div class="frame-caption">Mk-0.5 drone prototype</div>
+                  </div>
+
+                  <div class="picture-frame">
+                    <img src="src/images/drone/plane-2.png" alt="Mk-1 drone prototype">
+                    <div class="frame-caption">Mk-1 drone prototype</div>
+                  </div>
+
+                  <p>This was the flaw in our design however. Experiments with both drones resulted in crashes, damaging the body of the drones beyond repair, but kept electronics in favorable conditions for further prototyping and modeling.</p>
+
+                  <p>Future iterations and directions will have us solving the takeoff sequence to ensure a more reliable experience, this could mean an accelerated ramp, tube launching, or VTOL.</p>
                 </div>
                 <footer class="post-footer">
-                  <div class="post-meta">2026-01-17 · Opinions do not reflect those of affiliates.</div>
+                  <div class="post-meta">2026-02-08</div>
                 </footer>
               </article>
             </main>
