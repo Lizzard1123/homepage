@@ -522,17 +522,121 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
+            // Check if left snap zone is available
+            if (!this.isSnapZoneOccupied(SnapZone.LEFT)) {
+                // Snap to left automatically
+                if (windowInstance) {
+                    windowInstance.snapToSide(SnapZone.LEFT);
+                }
+                return;
+            }
+
+            // Check if right snap zone is available
+            if (!this.isSnapZoneOccupied(SnapZone.RIGHT)) {
+                // Snap to right automatically
+                if (windowInstance) {
+                    windowInstance.snapToSide(SnapZone.RIGHT);
+                }
+                return;
+            }
+
+            // Both zones are occupied, use cursor-based positioning
+            // but ensure window doesn't go below screen width or height
+            // and offset horizontally from windows in snap zones
             const linkRect = linkElement.getBoundingClientRect();
-            const windowWidth = windowElement.offsetWidth;
+            const screenWidth = window.innerWidth;
+            const screenHeight = window.innerHeight;
+            
+            // Get positions of windows in snap zones to avoid overlap
+            const leftWindow = this.snapZones[SnapZone.LEFT];
+            const rightWindow = this.snapZones[SnapZone.RIGHT];
+            const offsetAmount = 50; // Horizontal offset to avoid full overlap
+            
+            // Function to calculate and apply correct position
+            const applyCorrectPosition = () => {
+                // Get actual window dimensions
+                const windowRect = windowElement.getBoundingClientRect();
+                const windowWidth = windowRect.width || windowElement.offsetWidth;
+                const windowHeight = windowRect.height || windowElement.offsetHeight || windowElement.scrollHeight;
 
-            // Position down and to the left of the link
-            const newLeft = Math.max(0, linkRect.left - windowWidth + 20); // 20px padding from right edge
-            const newTop = linkRect.bottom + 10; // 10px below the link
+                // Start with cursor-based positioning
+                let newLeft = Math.max(0, linkRect.left - windowWidth + 20); // 20px padding from right edge
+                
+                // Check if this would overlap with left window
+                if (leftWindow && leftWindow.element) {
+                    const leftRect = leftWindow.element.getBoundingClientRect();
+                    // If new window would overlap with left window, offset it
+                    if (newLeft < leftRect.right && newLeft + windowWidth > leftRect.left) {
+                        newLeft = leftRect.right + offsetAmount;
+                    }
+                }
+                
+                // Check if this would overlap with right window
+                if (rightWindow && rightWindow.element) {
+                    const rightRect = rightWindow.element.getBoundingClientRect();
+                    // If new window would overlap with right window, offset it
+                    if (newLeft < rightRect.right && newLeft + windowWidth > rightRect.left) {
+                        // Try offsetting to the left of the right window
+                        const offsetLeft = rightRect.left - windowWidth - offsetAmount;
+                        if (offsetLeft >= 0) {
+                            newLeft = offsetLeft;
+                        } else {
+                            // Not enough space, offset to the right
+                            newLeft = rightRect.right + offsetAmount;
+                        }
+                    }
+                }
+                
+                // Ensure the window doesn't extend beyond the screen width
+                const maxLeft = Math.max(0, screenWidth - windowWidth);
+                newLeft = Math.min(newLeft, maxLeft);
+                
+                // Try positioning below the link first
+                let newTop = linkRect.bottom + 10; // 10px below the link
+                
+                // Check if window would extend beyond screen height
+                if (newTop + windowHeight > screenHeight) {
+                    // Try positioning above the link instead
+                    const topPosition = linkRect.top - windowHeight - 10;
+                    if (topPosition >= 16) {
+                        newTop = topPosition;
+                    } else {
+                        // Not enough space above either, position at top of screen
+                        newTop = 16;
+                    }
+                }
+                
+                // Ensure it doesn't go above the screen
+                newTop = Math.max(16, newTop);
+                
+                // Ensure bottom doesn't go below screen (with 16px padding)
+                const maxTop = screenHeight - windowHeight - 16;
+                newTop = Math.min(newTop, maxTop);
 
+                Object.assign(windowElement.style, {
+                    left: newLeft + 'px',
+                    top: newTop + 'px',
+                    transform: 'none'
+                });
+            };
+            
+            // Set initial position immediately
+            const initialLeft = Math.max(0, linkRect.left - 400 + 20);
+            const initialTop = linkRect.bottom + 10;
             Object.assign(windowElement.style, {
-                left: newLeft + 'px',
-                top: newTop + 'px',
+                left: initialLeft + 'px',
+                top: initialTop + 'px',
                 transform: 'none'
+            });
+            
+            // Use requestAnimationFrame to ensure window is measured after render
+            requestAnimationFrame(() => {
+                applyCorrectPosition();
+                
+                // Double-check after a short delay to catch any content that loads asynchronously
+                setTimeout(() => {
+                    applyCorrectPosition();
+                }, 100);
             });
 
         }
