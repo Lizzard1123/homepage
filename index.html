@@ -272,21 +272,352 @@
                   <h1>Using Reinforcement learning to play scoundrel</h1>
                 </header>
                 <div class="post-content">
-                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+                  <div class="picture-frame">
+                    <img src="src/images/scoundrel/scoundrel-banner.png" alt="Scoundrel game banner">
+                    <div class="frame-caption">Scoundrel - A roguelike card game</div>
+                  </div>
 
-                  <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+                  <h2>Background</h2>
+                  <p>At the intersection of my interests, lies a game called <a href="http://stfj.net/art/2011/Scoundrel.pdf" target="_blank">Scoundrel</a>. This single player card game that brings roguelike gameplay to a standard deck of cards has taken up a lot of my free time recently. Created in 2011 by <a href="https://www.stfj.net/" target="_blank">Zach Gage</a> and <a href="https://kurtbieg.com/" target="_blank">Kurt Bieg</a>, the basic idea of scoundrel is that you are trying to fight your way through a deck of cards using weapons, life potions, and strategic skips. Heart cards heal you up to 20 points, diamond cards can be used to fight monsters in decreasing order, and spades and clubs are the monsters you are fighting. Any time a monster is fought without a weapon, or with a weapon that is not stronger than the monster at hand, you take damage from the difference of the monster's strength and the weapon. The game starts by shuffling the deck, after removing the jack and higher from hearts and diamonds (ace is high), and drawing 4 cards face up. The face up cards are the current room. You choose to use/attack the cards until there is 1 left over, then drawing 3 additional cards. This gameplay loop is continued until the healthpoints are 0 or below, or the cards from the dungeon are gone. The last action one can take is skipping a room. If you have not skipped a room as the previous action, and there are 4 cards displayed in the room, the player can choose to pick up the cards shown, put them in order in the bottom of the shuffled deck, and draw new ones. Despite my many hours playing this card game, I would say that on average I win ~5% of the games that I play. This led me to believe that there must be a better strategy that I can find using RL and machine learning techniques.</p>
 
-                  <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.</p>
+                  <h2>Infrastructure</h2>
+                  <p>In order to play this game, I created a digital representation in Python. This game API worked for both headless and gui applications, allowing the Reinforcement learning simulator to use the game in its <a href="https://www.gymlibrary.dev/" target="_blank">gym environment</a> quickly, and for humans to play the game in the terminal, view decisions the current model makes, and show debug information. This game representation is <a href="https://github.com/lizzard1123/scoundrel" target="_blank">open sourced on GitHub</a> and available on <a href="https://pypi.org/project/scoundrel/" target="_blank">PyPI</a>, and can be downloaded using pip.</p>
 
-                  <p>Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?</p>
+                  <pre><code class="language-bash">pip install scoundrel</code></pre>
 
-                  <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga.</p>
+                  <p>If downloaded, you can play the game in the python environment it was downloaded in using the command <code>play</code> in the terminal.</p>
 
-                  <p>Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus.</p>
+                  <div class="picture-frame">
+                    <img src="src/images/scoundrel/scoundrel-cli.png" alt="Scoundrel CLI interface">
+                    <div class="frame-caption">Playing Scoundrel in the terminal</div>
+                  </div>
 
-                  <p>Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.</p>
+                  <h2>First approach</h2>
+                  <p>My first approach was to train a general MLP using <a href="https://openai.com/index/openai-baselines-ppo/" target="_blank">PPO</a> in the gym environment, rewarding longevity in the game. This approach never won in the 10k games it played, maximally got around -40 points as its best score, and during auditing, had converged to many bad strategies. Lets recap the space here.</p>
 
-                  <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.</p>
+                  <h3>Scoring</h3>
+                  <p>Scoring in Scoundrel can be expressed as the following:</p>
+
+                  <p>Score = # of remaining monsters + life + value of the last used position at the end of the game if it was the last card used and there are no remaining monsters</p>
+
+                  <p>This gives a score throughout the game, incentivizing removing monsters and keeping life high. As a bonus, the creators of the game added the potion bonus to reward exceptional play to push the max score from 20 to 30.</p>
+
+                  <h3>Feature space</h3>
+                  <p>The features between each model vary both as I progressed through the project, but also depending on the model type.</p>
+
+                  <h4>Scalar Features (Base Game State)</h4>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Feature Name</th>
+                        <th>Description</th>
+                        <th>Normalization</th>
+                        <th>Range</th>
+                        <th>Count</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><code>hp</code></td>
+                        <td>Current health</td>
+                        <td><code>/ 20.0</code></td>
+                        <td>[0.0, 1.0]</td>
+                        <td>1</td>
+                      </tr>
+                      <tr>
+                        <td><code>wep_val</code></td>
+                        <td>Equipped weapon value</td>
+                        <td><code>/ 14.0</code></td>
+                        <td>[0.0, 1.0]</td>
+                        <td>1</td>
+                      </tr>
+                      <tr>
+                        <td><code>wep_last</code></td>
+                        <td>Last weapon monster value</td>
+                        <td><code>/ 14.0</code></td>
+                        <td>[0.0, 1.0]</td>
+                        <td>1</td>
+                      </tr>
+                      <tr>
+                        <td><code>can_run</code></td>
+                        <td>Can avoid current room</td>
+                        <td>Binary</td>
+                        <td>{0.0, 1.0}</td>
+                        <td>1</td>
+                      </tr>
+                      <tr>
+                        <td><code>can_heal</code></td>
+                        <td>Can use potion</td>
+                        <td>Binary</td>
+                        <td>{0.0, 1.0}</td>
+                        <td>1</td>
+                      </tr>
+                      <tr>
+                        <td colspan="4"><strong>Room Card Features</strong> (per card, 4 cards)</td>
+                        <td></td>
+                      </tr>
+                      <tr>
+                        <td><code>is_present</code></td>
+                        <td>Card exists in slot</td>
+                        <td>Binary</td>
+                        <td>{0.0, 1.0}</td>
+                        <td>4</td>
+                      </tr>
+                      <tr>
+                        <td><code>card_value</code></td>
+                        <td>Card value</td>
+                        <td><code>/ 14.0</code></td>
+                        <td>[0.0, 1.0]</td>
+                        <td>4</td>
+                      </tr>
+                      <tr>
+                        <td><code>card_type</code></td>
+                        <td>Card type</td>
+                        <td>Categorical</td>
+                        <td>{0=monster, 1=weapon, 2=potion}</td>
+                        <td>4</td>
+                      </tr>
+                      <tr>
+                        <td colspan="4"><strong>Total Scalar Features</strong></td>
+                        <td><strong>17</strong></td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  <h4>Sequence Features</h4>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Feature Name</th>
+                        <th>Description</th>
+                        <th>Length</th>
+                        <th>Encoding</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><code>sequence_features</code></td>
+                        <td>Dungeon stack card sequence</td>
+                        <td>40</td>
+                        <td>Known cards: card ID, Unknown cards: 0, Padding: 0</td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  <h4>Unknown Stats (Dungeon Stack - Unknown Cards Only)</h4>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Feature Name</th>
+                        <th>Description</th>
+                        <th>Normalization</th>
+                        <th>Count</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><code>unknown_potion_sum</code></td>
+                        <td>Sum of unknown potion values</td>
+                        <td><code>/ 100.0</code></td>
+                        <td>1</td>
+                      </tr>
+                      <tr>
+                        <td><code>unknown_weapon_sum</code></td>
+                        <td>Sum of unknown weapon values</td>
+                        <td><code>/ 150.0</code></td>
+                        <td>1</td>
+                      </tr>
+                      <tr>
+                        <td><code>unknown_monster_sum</code></td>
+                        <td>Sum of unknown monster values</td>
+                        <td><code>/ 250.0</code></td>
+                        <td>1</td>
+                      </tr>
+                      <tr>
+                        <td colspan="3"><strong>Total Unknown Stats</strong></td>
+                        <td><strong>3</strong></td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  <h4>Total Stats (Dungeon Stack - All Cards)</h4>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Feature Name</th>
+                        <th>Description</th>
+                        <th>Normalization</th>
+                        <th>Count</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><code>total_potion_sum</code></td>
+                        <td>Sum of all potion values</td>
+                        <td><code>/ 100.0</code></td>
+                        <td>1</td>
+                      </tr>
+                      <tr>
+                        <td><code>total_weapon_sum</code></td>
+                        <td>Sum of all weapon values</td>
+                        <td><code>/ 150.0</code></td>
+                        <td>1</td>
+                      </tr>
+                      <tr>
+                        <td><code>total_monster_sum</code></td>
+                        <td>Sum of all monster values</td>
+                        <td><code>/ 250.0</code></td>
+                        <td>1</td>
+                      </tr>
+                      <tr>
+                        <td colspan="3"><strong>Total Stats</strong></td>
+                        <td><strong>3</strong></td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  <h4>Room Features (Per Card, 4 Cards × 8 Features)</h4>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Feature Name</th>
+                        <th>Description</th>
+                        <th>Normalization</th>
+                        <th>Count</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><code>is_present</code></td>
+                        <td>Card exists in slot</td>
+                        <td>Binary</td>
+                        <td>4</td>
+                      </tr>
+                      <tr>
+                        <td><code>value</code></td>
+                        <td>Card value</td>
+                        <td><code>/ 14.0</code></td>
+                        <td>4</td>
+                      </tr>
+                      <tr>
+                        <td><code>is_monster</code></td>
+                        <td>Is monster card</td>
+                        <td>Binary</td>
+                        <td>4</td>
+                      </tr>
+                      <tr>
+                        <td><code>is_weapon</code></td>
+                        <td>Is weapon card</td>
+                        <td>Binary</td>
+                        <td>4</td>
+                      </tr>
+                      <tr>
+                        <td><code>is_potion</code></td>
+                        <td>Is potion card</td>
+                        <td>Binary</td>
+                        <td>4</td>
+                      </tr>
+                      <tr>
+                        <td><code>can_weapon_beat</code></td>
+                        <td>Equipped weapon can beat monster</td>
+                        <td>Binary</td>
+                        <td>4</td>
+                      </tr>
+                      <tr>
+                        <td><code>damage_if_fight</code></td>
+                        <td>Expected damage if fighting</td>
+                        <td><code>/ 14.0</code></td>
+                        <td>4</td>
+                      </tr>
+                      <tr>
+                        <td><code>is_beneficial</code></td>
+                        <td>Is weapon or potion (beneficial)</td>
+                        <td>Binary</td>
+                        <td>4</td>
+                      </tr>
+                      <tr>
+                        <td colspan="3"><strong>Total Room Features</strong></td>
+                        <td><strong>32</strong></td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  <h4>Room Mask</h4>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Feature Name</th>
+                        <th>Description</th>
+                        <th>Type</th>
+                        <th>Count</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><code>room_mask</code></td>
+                        <td>Empty slot indicator</td>
+                        <td>Boolean</td>
+                        <td>4</td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  <h4>Dungeon Length</h4>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Feature Name</th>
+                        <th>Description</th>
+                        <th>Type</th>
+                        <th>Count</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><code>dungeon_len</code></td>
+                        <td>Actual dungeon deck length</td>
+                        <td>Integer</td>
+                        <td>1</td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  <p>Using this setup… It still did not work.</p>
+
+                  <h2>New approach</h2>
+                  <p>Scoundrel is a hard game to train. The combination of rules, delayed rewards, and strategy was not translating to a neural network using PPO. When faced with this issue in the past, <a href="https://www.deepmind.com/" target="_blank">Google Deepmind</a>, creating RL agents to play Go, created a strategy used in their <a href="https://www.deepmind.com/research/highlighted-research/alphago" target="_blank">AlphaGO</a> agent that I believe could also work in this case. It uses a combination of <a href="https://en.wikipedia.org/wiki/Monte_Carlo_tree_search" target="_blank">monte carlo tree simulation</a>, curriculum learning, and self play to train a network to beat games. Basically my approach would be the following: use <a href="https://en.wikipedia.org/wiki/Monte_Carlo_tree_search" target="_blank">MCTS</a> to create an expert dataset of moves in place of human expert moves, use the expert dataset to train a model using imitation learning, allowing the model to predict moves that experts would make and get some game sense on actions and results, and finally self play to further refine strategies.</p>
+
+                  <h3>MCTS</h3>
+                  <p>MCTS heuristically samples the game action tree to see what sequence of moves would lead to the best future result, then moves 1 action in the future based on what it found. For my simulation, at each move, MCTS plays out 100,000 games to see what action leads to the best average case in the end. This is the best guess for 100,000 deck randomizations, which is the biggest uncertainty in this game. I implement a strategy called determination to average deck shuffles in the rollout phase of the MCTS gameplay to get a good average expectation of the remaining deck. MCTS is particularly good at playing scoundrel due to the skip mechanic. When a player sees a room and chooses to skip, the cards they skipped go in order at the bottom of the deck. This means that at the end of the game, MCTS does not need to average out the randomness, but can instead play out all scenarios to choose the best path to go down with all information available to it.</p>
+
+                  <p>Using collected information across</p>
+
+                  <pre><code class="language-python">Games: 8572
+
+Statistics:
+  Wins: 2436 (28.42%)
+  Average score: -19.71
+  Best score: 30
+  Worst score: -188
+  Average turns per game: 43.1
+  Total turns: 369311</code></pre>
+
+                  <p>We have the following game distributions</p>
+
+                  <div class="picture-frame">
+                    <img src="src/images/scoundrel/mcts-game-score.png" alt="MCTS game score distribution">
+                    <div class="frame-caption">MCTS game score distribution</div>
+                  </div>
+
+                  <div class="picture-frame">
+                    <img src="src/images/scoundrel/mcts-game-length.png" alt="MCTS game length distribution">
+                    <div class="frame-caption">MCTS game length distribution</div>
+                  </div>
+
+                  <p>This is already a resounding step forward! 28.42% of the games won compared to my average of ~5% means that I was right to assume that I was bad at the game and there are better strategies out there.</p>
+
+                  <h3>Distillation and self play</h3>
+                  <p>Further taking this expert data and following in the footsteps of <a href="https://www.deepmind.com/research/highlighted-research/alphago" target="_blank">AlphaGo</a>, preliminary results of training models using supervised learning on the data collected showed models performing at about a 15% win rate. I am still working on pushing this further via scaling or architectural changes and will update this with further findings.</p>
                 </div>
                 <footer class="post-footer">
                   <div class="post-meta">2026-01-17 · Opinions do not reflect those of affiliates.</div>
