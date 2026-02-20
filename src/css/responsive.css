@@ -46,9 +46,17 @@
     align-items: stretch;
   }
 
+  .hero-image {
+    width: 100%;
+    max-width: 100vw;
+    height: auto;
+  }
+
   .hero-image img {
     width: 100%;
     height: auto;
+    max-width: 100vw;
+    max-height: none;
     aspect-ratio: 4 / 5;
     object-fit: cover;
   }
